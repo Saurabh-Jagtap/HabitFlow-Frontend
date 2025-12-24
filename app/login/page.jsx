@@ -1,27 +1,28 @@
 "use client"
 import React, { useState } from 'react'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
-const Register = () => {
+const Login = () => {
 
-  const [fullname, setFullname] = useState("")
-  const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/user/register', {
-        fullname,
-        username,
+      const response = await axios.post('http://localhost:5000/api/v1/user/login', {
         email,
         password
       }, { withCredentials: true }
     );
 
       console.log(response);
-      
+
+      router.push('/dashboard')
+
     } catch (error) {
       console.error(error.response?.data || error);
     }
@@ -30,53 +31,6 @@ const Register = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        {/* fullname */}
-        <label className="input validator">
-          <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </g>
-          </svg>
-          <input
-            type="text"
-            onChange={e => { setFullname(e.target.value) }}
-            value={fullname}
-            required
-            placeholder="Fullname"
-          />
-        </label>
-        
-
-        {/* username */}
-        <label className="input validator">
-          <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </g>
-          </svg>
-          <input
-            type="text"
-            onChange={e => { setUsername(e.target.value) }}
-            value={username}
-            required
-            placeholder="Username"
-          />
-        </label>
-
         {/* email */}
         <label className="input validator">
           <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -125,17 +79,10 @@ const Register = () => {
           />
         </label>
 
-        {/* file input - avatar */}
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Pick a file</legend>
-          <input type="file" className="file-input" />
-          <label className="label">Max size 2MB</label>
-        </fieldset>
-
-        <button className="btn btn-block" type='submit'>Register</button>
+        <button className="btn btn-block" type='submit'>Login</button>
       </form>
     </>
   )
 }
 
-export default Register
+export default Login
