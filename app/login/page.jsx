@@ -7,6 +7,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState(null)
 
   const router = useRouter();
 
@@ -24,7 +25,7 @@ const Login = () => {
       router.push('/dashboard')
 
     } catch (error) {
-      console.error(error.response?.data || error);
+      setError(error)
     }
   }
 

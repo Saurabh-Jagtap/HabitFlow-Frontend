@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import Link from 'next/link'
 
 const Dashboard = () => {
 
@@ -39,9 +40,11 @@ const Dashboard = () => {
     <>
       <ul>
         {habits.map(habit => (
-          <li key={habit._id}>
-            {habit.title} | {habit.description} | {habit.category}
-          </li>
+          <Link key={habit._id} href={`/habits/${habit._id}`}>
+            <li>
+              <strong>{habit.title}</strong> | {habit.description} | {habit.category}
+            </li>
+          </Link>
         ))}
       </ul>
     </>
