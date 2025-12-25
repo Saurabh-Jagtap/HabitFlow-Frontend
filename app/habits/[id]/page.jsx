@@ -18,6 +18,8 @@ const habits = () => {
   const [longestStreak, setLongestStreak] = useState(0)
   const [completionRate, setCompletionRate] = useState(0)
 
+  const avatarUrl = habit?.userId?.avatar ? habit.userId.avatar : ""  // I have the placeholder image stored in public folder tell me what path should I add here
+
   useEffect(() => {
     const fetchHabitsByID = async (request) => {
       try {
@@ -116,7 +118,7 @@ const habits = () => {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div className='flex justify-center items-center min-h-screen'><span className="loading loading-bars loading-xl "></span></div>
   }
   if (error) {
     return <div>Something went wrong</div>;
@@ -128,30 +130,91 @@ const habits = () => {
 
   return (
     <>
-      <h1>{habit.title}</h1>
-      <p>{habit.description}</p>
-      <p>{habit.category}</p>
+      <div className='min-h-screen flex justify-center items-start'>
+        <div className="card bg-base-200 shadow-xl w-full max-w-2xl transition-all duration-300 hover:shadow-2xl">
+          <div className="flex items-center gap-4">
+            <div className="avatar">
+              <div className="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <img src={avatarUrl} alt="User avatar" />
+              </div>
+            </div>
 
-      <h1>Current Streak: {currentStreak} {currentStreak === 1 ? "day" : "days"} </h1>
-      <h1>Longest Streak: {longestStreak} {longestStreak === 1 ? "day" : "days"} </h1>
-      <h1>Completion Rate: {completionRate}</h1>
+            <div>
+              <h1 className="text-3xl font-bold">{habit.title}</h1>
+              <p className="text-gray-400">{habit.description}</p>
+              <div className="badge badge-info">
+                <svg className="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" strokeLinejoin="miter" strokeLinecap="butt"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeLinecap="square" stroke-miterlimit="10" strokeWidth="2"></circle><path d="m12,17v-5.5c0-.276-.224-.5-.5-.5h-1.5" fill="none" stroke="currentColor" strokeLinecap="square" stroke-miterlimit="10" strokeWidth="2"></path><circle cx="12" cy="7.25" r="1.25" fill="currentColor" strokeWidth="2"></circle></g></svg>
+                {habit.category}
+              </div>
+            </div>
+          </div>
 
-      {completedToday && <button
-        className="btn btn-success mx-52"
-        onClick={handleLog}
-      >
-        Undo
-      </button>}
+          <figure className="px-10 pt-10">
+            <div className="stats shadow">
+              <div className="stat">
+                <div className="stat-figure text-primary">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="inline-block h-8 w-8 stroke-current"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="stat-title">Current Streak</div>
+                <div className="stat-value text-primary">{currentStreak} {currentStreak === 1 ? "day" : "days"}</div>
+              </div>
 
-      {!completedToday && <button className="btn btn-neutral" onClick={handleLog}>Mark as Done</button>}
+              <div className="stat">
+                <div className="stat-figure text-secondary">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="inline-block h-8 w-8 stroke-current"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="stat-title">Longest Streak</div>
+                <div className="stat-value text-secondary">{longestStreak} {longestStreak === 1 ? "day" : "days"}</div>
+              </div>
 
-      <ul>
-        {habitLog.map(habit => (
-          <li key={habit._id}>
-            {habit.date} | {habit.completed}
-          </li>
-        ))}
-      </ul>
+              <div className="stat">
+                <div className="stat-figure text-secondary">
+                  <div className="avatar avatar-online">
+                    <div className="w-16 rounded-full">
+                      <img src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp" />
+                    </div>
+                  </div>
+                </div>
+                <div className="stat-value">{Math.round(completionRate * 100)}%</div>
+                <div className="stat-title">Tasks done</div>
+                <div className="stat-desc text-secondary">31 tasks remaining</div>
+              </div>
+            </div>
+          </figure>
+          <div className="card-body items-center text-center">
+            <h2 className="card-title">{habit.title}</h2>
+            <p>{habit.description}</p>
+            <p>{habit.category}</p>
+            <div className="card-actions">
+              {completedToday ? <button className="btn btn-success btn-lg transition-transform hover:scale-105" onClick={handleLog}>Completed Today ✓ (Undo)</button> : <button className="btn btn-neutral btn-lg transition-transform hover:scale-105" onClick={handleLog}>Mark as Done</button>}
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
