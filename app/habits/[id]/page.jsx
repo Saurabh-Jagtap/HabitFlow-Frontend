@@ -5,7 +5,7 @@ import axios from 'axios'
 import { calculateCurrentStreak } from '@/app/currentStreak'
 import { calculateLongestStreak } from '@/app/longestStreak'
 
-const habits = () => {
+const habitDetailPage = () => {
 
   const { id } = useParams();
 
@@ -18,16 +18,15 @@ const habits = () => {
   const [longestStreak, setLongestStreak] = useState(0)
   const [completionRate, setCompletionRate] = useState(0)
 
-  const avatarUrl = habit?.userId?.avatar ? habit.userId.avatar : ""  // I have the placeholder image stored in public folder tell me what path should I add here
+  const avatarUrl = habit?.userId?.avatar ? habit.userId.avatar : "/Profile_avatar_placeholder.png"  
 
   useEffect(() => {
-    const fetchHabitsByID = async (request) => {
+    const fetchHabitsByID = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/v1/habits/${id}`,
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/habits/${id}`,
           { withCredentials: true }
         );
         setHabit(response.data.data)
-        console.log(response);
       } catch (error) {
         setError(error)
       } finally {
@@ -48,12 +47,11 @@ const habits = () => {
 
   const fetchHabitLogs = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/v1/habits/${id}/logs`,
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/habits/${id}/logs`,
         { withCredentials: true }
       );
       const logs = response.data.data.logs;
       setHabitLog(logs)
-      console.log(response)
 
       const today = new Date()
       today.setHours(0, 0, 0, 0)
@@ -105,10 +103,9 @@ const habits = () => {
   const handleLog = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`http://localhost:5000/api/v1/habits/${id}/log`,
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/habits/${id}/log`,
         { completed: !completedToday },
         { withCredentials: true })
-      console.log(response)
       setCompletedToday(prev => !prev)
       await fetchHabitLogs()
 
@@ -201,7 +198,6 @@ const habits = () => {
                 </div>
                 <div className="stat-value">{Math.round(completionRate * 100)}%</div>
                 <div className="stat-title">Tasks done</div>
-                <div className="stat-desc text-secondary">31 tasks remaining</div>
               </div>
             </div>
           </figure>
@@ -219,4 +215,4 @@ const habits = () => {
   )
 }
 
-export default habits
+export default habitDetailPage
