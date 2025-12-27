@@ -129,7 +129,7 @@ const habitDetailPage = () => {
   return (
     <main className="flex min-h-screen justify-center px-4 py-10">
       <section className="card w-full max-w-3xl bg-base-200 shadow-xl transition-all duration-300 hover:shadow-2xl">
-        {/* Header */}
+
         <div className="card-body gap-4">
           <div className="flex items-center gap-4">
             <div className="avatar">
@@ -153,7 +153,6 @@ const habitDetailPage = () => {
 
           <p className="text-base-content/70 mt-1">{habit.description}</p>
 
-          {/* Stats */}
             <div className="stats stats-vertical md:stats-horizontal shadow">
               <div className="stat">
                 <div className="stat-title">Current Streak</div>
@@ -175,7 +174,6 @@ const habitDetailPage = () => {
               </div>
             </div>
 
-          {/* CTA */}
           <div className="card-actions justify-center pt-2">
             <button
               onClick={handleLog}
