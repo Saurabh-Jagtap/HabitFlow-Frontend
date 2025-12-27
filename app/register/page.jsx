@@ -1,141 +1,132 @@
-"use client"
-import React, { useState } from 'react'
-import axios from 'axios'
+"use client";
+import React, { useState } from "react";
+import axios from "axios";
+import Link from "next/link";
 
 const Register = () => {
-
-  const [fullname, setFullname] = useState("")
-  const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [fullname, setFullname] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/user/register', {
-        fullname,
-        username,
-        email,
-        password
-      }, { withCredentials: true }
-    );
+      const formData = new FormData();
+      formData.append("fullname", fullname);
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("password", password);
+      if (avatar) formData.append("avatar", avatar);
+
+      const response = await axios.post(
+        "http://localhost:5000/api/v1/user/register",
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       console.log(response);
-      
-    } catch (error) {
-      console.error(error.response?.data || error);
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        {/* fullname */}
-        <label className="input validator">
-          <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-              fill="none"
-              stroke="currentColor"
+    <div className="min-h-[90vh] flex items-center justify-center bg-base-200 px-4">
+      <div className="card w-full max-w-md bg-base-100 shadow-xl">
+        <div className="card-body gap-4">
+
+          <div className="text-center">
+            <h1 className="text-3xl font-bold">Create Account</h1>
+            <p className="text-base-content/70 mt-1">
+              Start building better habits today
+            </p>
+          </div>
+
+          {error && (
+            <div className="alert alert-error text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <input
+              type="text"
+              placeholder="Full name"
+              className="input input-bordered w-full"
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="Username"
+              className="input input-bordered w-full"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+
+            <input
+              type="email"
+              placeholder="Email"
+              className="input input-bordered w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              className="input input-bordered w-full"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+            <div>
+              <label className="label text-sm">
+                Profile Avatar (optional)
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                className="file-input file-input-bordered w-full"
+                onChange={(e) => setAvatar(e.target.files[0])}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""}`}
             >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </g>
-          </svg>
-          <input
-            type="text"
-            onChange={e => { setFullname(e.target.value) }}
-            value={fullname}
-            required
-            placeholder="Fullname"
-          />
-        </label>
-        
+              {loading ? (<span className="loading loading-bars loading-md"></span>) : "Register"}
+            </button>
+          </form>
 
-        {/* username */}
-        <label className="input validator">
-          <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </g>
-          </svg>
-          <input
-            type="text"
-            onChange={e => { setUsername(e.target.value) }}
-            value={username}
-            required
-            placeholder="Username"
-          />
-        </label>
+          <p className="text-center text-sm text-base-content/70">
+            Already have an account?{" "}
+            <Link href="/login" className="link link-primary">
+              Login
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-        {/* email */}
-        <label className="input validator">
-          <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-            </g>
-          </svg>
-          <input
-            type="email"
-            onChange={e => { setEmail(e.target.value) }}
-            value={email}
-            placeholder="mail@site.com"
-            required />
-        </label>
-        <div className="validator-hint hidden">Enter valid email address</div>
-
-        {/* password */}
-        <label className="input validator">
-          <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path
-                d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
-              ></path>
-              <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
-            </g>
-          </svg>
-          <input
-            type="password"
-            onChange={e => { setPassword(e.target.value) }}
-            value={password}
-            required
-            placeholder="Password"
-          />
-        </label>
-
-        {/* file input - avatar */}
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Pick a file</legend>
-          <input type="file" className="file-input" />
-          <label className="label">Max size 2MB</label>
-        </fieldset>
-
-        <button className="btn btn-block" type='submit'>Register</button>
-      </form>
-    </>
-  )
-}
-
-export default Register
+export default Register;

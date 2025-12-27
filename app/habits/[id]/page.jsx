@@ -99,7 +99,7 @@ const habitDetailPage = () => {
 
   const handleLog = async (e) => {
     e.preventDefault();
-    if(completionLoading) return
+    if (completionLoading) return
     try {
       setCompletionLoading(true)
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/habits/${id}/log`,
@@ -110,7 +110,7 @@ const habitDetailPage = () => {
 
     } catch (error) {
       setError("Failed to update habit status.")
-    }finally{
+    } finally {
       setCompletionLoading(false)
     }
   }
@@ -130,7 +130,7 @@ const habitDetailPage = () => {
     <main className="flex min-h-screen justify-center px-4 py-10">
       <section className="card w-full max-w-3xl bg-base-200 shadow-xl transition-all duration-300 hover:shadow-2xl">
         {/* Header */}
-        <div className="card-body gap-6">
+        <div className="card-body gap-4">
           <div className="flex items-center gap-4">
             <div className="avatar">
               <div className="relative h-16 w-16 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100">
@@ -144,39 +144,39 @@ const habitDetailPage = () => {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold">{habit.title}</h1>
+              <h1 className="text-3xl font-bold">{habit.title}</h1>
               <span className="badge badge-info mt-1">
-                {habit.category}
+                {habit.category || "category"}
               </span>
             </div>
           </div>
 
-          <p className="text-base-content/70">{habit.description}</p>
+          <p className="text-base-content/70 mt-1">{habit.description}</p>
 
           {/* Stats */}
-          <div className="stats stats-vertical md:stats-horizontal shadow">
-            <div className="stat">
-              <div className="stat-title">Current Streak</div>
-              <div className="stat-value text-primary">
-                {currentStreak}d
+            <div className="stats stats-vertical md:stats-horizontal shadow">
+              <div className="stat">
+                <div className="stat-title">Current Streak</div>
+                <div className="stat-value text-primary">
+                  {currentStreak}d
+                </div>
+              </div>
+
+              <div className="stat">
+                <div className="stat-title">Longest Streak</div>
+                <div className="stat-value text-secondary">
+                  {longestStreak}d
+                </div>
+              </div>
+
+              <div className="stat">
+                <div className="stat-title">Completion Rate</div>
+                <div className="stat-value">{Math.round(completionRate * 100)}%</div>
               </div>
             </div>
-
-            <div className="stat">
-              <div className="stat-title">Longest Streak</div>
-              <div className="stat-value text-secondary">
-                {longestStreak}d
-              </div>
-            </div>
-
-            <div className="stat">
-              <div className="stat-title">Completion Rate</div>
-              <div className="stat-value">{Math.round(completionRate * 100)}%</div>
-            </div>
-          </div>
 
           {/* CTA */}
-          <div className="card-actions justify-center pt-4">
+          <div className="card-actions justify-center pt-2">
             <button
               onClick={handleLog}
               className={`btn btn-lg ${completedToday ? "btn-success" : "btn-neutral"}`}
