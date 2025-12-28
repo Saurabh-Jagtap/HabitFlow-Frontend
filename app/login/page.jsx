@@ -1,21 +1,21 @@
-"use client";
-import React, { useState } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+"use client"
+import React, { useState } from "react"
+import axios from "axios"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const router = useRouter();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault()
+    setError("")
+    setLoading(true)
 
     try {
       const response = await axios.post(
@@ -27,9 +27,9 @@ const Login = () => {
       router.push("/dashboard");
 
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || "Login failed")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   };
 

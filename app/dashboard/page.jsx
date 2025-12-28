@@ -1,55 +1,55 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Link from "next/link";
+"use client"
+import React, { useEffect, useState } from "react"
+import axios from "axios"
+import Link from "next/link"
 
 const Dashboard = () => {
   
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
-  const [habits, setHabits] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
+  const [habits, setHabits] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [category, setCategory] = useState("")
 
   useEffect(() => {
-    fetchHabits();
-  }, []);
+    fetchHabits()
+  }, [])
 
   const fetchHabits = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
       const response = await axios.get(`${apiUrl}/api/v1/habits/`, {
         withCredentials: true,
       });
-      setHabits(response.data.data);
+      setHabits(response.data.data)
     } catch (err) {
-      setError("Failed to load habits");
+      setError("Failed to load habits")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   };
 
   const handleCreateHabit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      setLoading(true);
+      setLoading(true)
       await axios.post(
         `${apiUrl}/api/v1/habits/`,
         { title, description, category },
         { withCredentials: true }
       );
 
-      setTitle("");
-      setDescription("");
-      setCategory("");
-      fetchHabits();
+      setTitle("")
+      setDescription("")
+      setCategory("")
+      fetchHabits()
     } catch (err) {
-      setError("Failed to create habit");
+      setError("Failed to create habit")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   };
 

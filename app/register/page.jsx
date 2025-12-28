@@ -1,32 +1,32 @@
-"use client";
-import React, { useState } from "react";
-import axios from "axios";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+"use client"
+import React, { useState } from "react"
+import axios from "axios"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 const Register = () => {
-  const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [fullname, setFullname] = useState("")
+  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [avatar, setAvatar] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const router = useRouter();
+  const router = useRouter()
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault()
+    setError("")
+    setLoading(true)
 
     try {
       const formData = new FormData();
-      formData.append("fullname", fullname);
-      formData.append("username", username);
-      formData.append("email", email);
-      formData.append("password", password);
-      if (avatar) formData.append("avatar", avatar);
+      formData.append("fullname", fullname)
+      formData.append("username", username)
+      formData.append("email", email)
+      formData.append("password", password)
+      if (avatar) formData.append("avatar", avatar)
 
       const response = await axios.post(
         "http://localhost:5000/api/v1/user/register",
@@ -37,12 +37,12 @@ const Register = () => {
         }
       );
 
-      console.log(response);
-      router.push("/dashboard");
+      console.log(response)
+      router.push("/login")
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      setError(err.response?.data?.message || "Registration failed")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   };
 
