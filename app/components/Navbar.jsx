@@ -25,13 +25,13 @@ const Navbar = ({ user }) => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700">
+    <nav className="sticky top-0 z-50 bg-linear-to-r from-slate-900 to-slate-800 border-b border-slate-700">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex h-16 items-center justify-between">
           {/* Brand */}
           <Link
             href="/dashboard"
-            className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent hover:opacity-90 transition"
+            className="text-2xl font-bold bg-linear-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent hover:opacity-90 transition"
           >
             HabitFlow
           </Link>
