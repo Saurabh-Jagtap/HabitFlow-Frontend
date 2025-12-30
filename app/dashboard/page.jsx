@@ -169,8 +169,8 @@ const Dashboard = () => {
              rounded-xl px-6 py-3 font-medium text-white
              bg-linear-to-r from-indigo-500 to-purple-600
              shadow-md hover:shadow-lg
-             hover:from-indigo-600 hover:to-purple-700
-             transition-all duration-500"
+             hover:ring-2 hover:ring-indigo-500/40
+             transition-all duration-200 cursor-pointer"
                   disabled={loading}
                 >
                   {loading ? (

@@ -20,7 +20,6 @@ export default function RootLayout({ children }) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
   const [user, setUser] = useState(null)
-  const [loadingUser, setLoadingUser] = useState(true)
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,8 +28,6 @@ export default function RootLayout({ children }) {
         setUser(response.data.data)
       } catch (error) {
         setUser(null)
-      } finally {
-        setLoadingUser(false)
       }
     }
 
@@ -43,7 +40,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {!loadingUser && <Navbar user={user} />}
+        <Navbar user={user} />
         {children}
       </body>
     </html>
