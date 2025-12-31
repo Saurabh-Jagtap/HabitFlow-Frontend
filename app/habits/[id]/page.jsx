@@ -1,232 +1,301 @@
-"use client"
-import React, { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
-import axios from 'axios'
-import { calculateCurrentStreak } from '@/app/currentStreak'
-import { calculateLongestStreak } from '@/app/longestStreak'
-import Image from 'next/image'
+"use client";
 
-const habitDetailPage = () => {
+import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import axios from "axios";
+import Image from "next/image";
 
+import { calculateCurrentStreak } from "@/app/utils/currentStreak.utils";
+import { calculateLongestStreak } from "@/app/utils/longestStreak.utils";
+import { generateCalendarDays } from "@/app/utils/generateCalendar.utils";
+
+const HabitDetailPage = () => {
   const { id } = useParams();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  const [habitLog, setHabitLog] = useState([])
-  const [habit, setHabit] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [completedToday, setCompletedToday] = useState(null)
-  const [currentStreak, setCurrentStreak] = useState(0)
-  const [longestStreak, setLongestStreak] = useState(0)
-  const [completionRate, setCompletionRate] = useState(0)
-  const [completionLoading, setCompletionLoading] = useState(false)
+  const [habit, setHabit] = useState(null);
+  const [habitLogs, setHabitLogs] = useState([]);
+  const [completedToday, setCompletedToday] = useState(false);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
+  const [completionRate, setCompletionRate] = useState(0);
+  const [completedDays, setCompletedDays] = useState(new Set());
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const d = new Date();
+    d.setDate(1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
 
-  const avatarUrl = habit?.userId?.avatar ? habit.userId.avatar : "/Profile_avatar_placeholder.png"
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [completionLoading, setCompletionLoading] = useState(false);
+
+  const avatarUrl =
+    habit?.userId?.avatar || "/Profile_avatar_placeholder.png";
+
+  /* ========================= FETCH ========================= */
 
   useEffect(() => {
-    const fetchHabitsByID = async () => {
+    if (!id) return;
+
+    const fetchHabit = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/v1/habits/${id}`,
+        const habitRes = await axios.get(
+          `${apiUrl}/api/v1/habits/${id}`,
           { withCredentials: true }
         );
-        setHabit(response.data.data)
-      } catch (error) {
-        setError(error)
+        setHabit(habitRes.data.data);
+
+        const logsRes = await axios.get(
+          `${apiUrl}/api/v1/habits/${id}/logs`,
+          { withCredentials: true }
+        );
+
+        const logs = logsRes.data.data.logs;
+        setHabitLogs(logs);
+
+        // completed today
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const todayLog = logs.find(log => {
+          const d = new Date(log.date);
+          d.setHours(0, 0, 0, 0);
+          return d.getTime() === today.getTime();
+        });
+
+        setCompletedToday(Boolean(todayLog?.completed));
+
+        // streaks
+        setCurrentStreak(calculateCurrentStreak(logs));
+        setLongestStreak(calculateLongestStreak(logs));
+
+        // completion rate
+        const total = logs.length;
+        const completed = logs.filter(l => l.completed).length;
+        setCompletionRate(total ? completed / total : 0);
+
+        // completed days set
+        const completedSet = new Set(
+          logs
+            .filter(l => l.completed)
+            .map(l => {
+              const d = new Date(l.date);
+              d.setHours(0, 0, 0, 0);
+              return d.getTime();
+            })
+        );
+        setCompletedDays(completedSet);
+
+      } catch (err) {
+        setError("Failed to load habit");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
+    };
 
-    }
-    if (id) {
-      fetchHabitsByID();
-      fetchHabitLogs();
-    }
-  }, [id])
+    fetchHabit();
+  }, [id]);
 
-  const fetchHabitLogs = async () => {
+  /* ========================= LOG TOGGLE ========================= */
+
+  const handleLog = async () => {
+    if (completionLoading) return;
     try {
-      const response = await axios.get(`${apiUrl}/api/v1/habits/${id}/logs`,
+      setCompletionLoading(true);
+      await axios.post(
+        `${apiUrl}/api/v1/habits/${id}/log`,
+        { completed: !completedToday },
         { withCredentials: true }
       );
-      const logs = response.data.data.logs;
-      setHabitLog(logs)
-
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
-
-      let completed = false;
-
-      for (const log of logs) {
-        const logDate = new Date(log.date)
-        logDate.setHours(0, 0, 0, 0);
-
-        if (logDate.getTime() === today.getTime()) {
-          completed = log.completed;
-          break;
-        }
-      }
-      setCompletedToday(completed)
-
-      const currStreak = calculateCurrentStreak(logs)
-      setCurrentStreak(currStreak)
-
-      const longStreak = calculateLongestStreak(logs)
-      setLongestStreak(longStreak)
-
-      // Completion Rate logic
-      let totalCompletions = 0
-
-      for (const log of logs) {
-        if (log.completed === true) {
-          totalCompletions++
-        }
-      }
-
-      let completeRate = 0;
-      let totalLogs = logs.length;
-
-      if (totalLogs === 0) {
-        completeRate = 0;
-      } else {
-        completeRate = totalCompletions / totalLogs;
-      }
-
-      setCompletionRate(completeRate)
-
-    } catch (error) {
-      setError(error)
-    }
-  }
-
-  const handleLog = async (e) => {
-    e.preventDefault();
-    if (completionLoading) return
-    try {
-      setCompletionLoading(true)
-      const response = await axios.post(`${apiUrl}/api/v1/habits/${id}/log`,
-        { completed: !completedToday },
-        { withCredentials: true })
-      setCompletedToday(prev => !prev)
-      await fetchHabitLogs()
-
-    } catch (error) {
-      setError("Failed to update habit status.")
+      setCompletedToday(prev => !prev);
+      // re-fetch logs
+      setLoading(true);
+      await new Promise(r => setTimeout(r, 300));
+      window.location.reload();
+    } catch {
+      setError("Failed to update habit");
     } finally {
-      setCompletionLoading(false)
+      setCompletionLoading(false);
     }
-  }
+  };
+
+  /* ========================= STATES ========================= */
 
   if (loading) {
-    return <div className='flex justify-center items-center min-h-screen'><span className="loading loading-bars loading-xl"></span></div>
-  }
-  if (error) {
-    return <div>Something went wrong</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="loading loading-bars loading-xl"></span>
+      </div>
+    );
   }
 
-  if (!habit) {
-    return <div>Habit not found</div>;
+  if (error || !habit) {
+    return <div className="text-center mt-20">Something went wrong</div>;
   }
+
+  /* ========================= UI ========================= */
 
   return (
-    <main className="relative min-h-[90vh] bg-base-200 px-4 py-12 overflow-hidden animate-fade-in-up">
-      <section className="w-full max-w-3xl mx-auto rounded-2xl bg-base-100
-                    border border-base-300 shadow-xl
-                    transition-all duration-300">
+    <main className="relative min-h-[90vh] bg-base-200 px-4 py-14 overflow-hidden animate-fade-in-up">
 
+      {/* Background Glow */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-1/3 left-1/4 h-72 w-72 bg-indigo-500/20 blur-3xl rounded-full" />
+        <div className="absolute top-1/4 right-1/4 h-72 w-72 bg-purple-500/20 blur-3xl rounded-full" />
+      </div>
 
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/3 left-1/4 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
-          <div className="absolute top-1/4 right-1/4 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl"></div>
-        </div>
+      <section className="max-w-6xl mt-7 mx-auto rounded-2xl bg-base-100 border border-base-300 shadow-xl p-6">
 
-        <div className="card-body gap-4">
-          <div className="flex items-center gap-5">
-            <div className="relative h-16 w-16 rounded-full ring-2 ring-indigo-500 ring-offset-2 ring-offset-base-100 overflow-hidden">
-              <Image
-                src={avatarUrl}
-                alt="User avatar"
-                fill
-                className="rounded-full object-cover"
-              />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+          {/* ================= LEFT ================= */}
+          <div className="space-y-6">
+
+            {/* Header */}
+            <div className="flex items-center gap-5">
+              <div className="relative h-16 w-16 rounded-full ring-2 ring-indigo-500 ring-offset-2 ring-offset-base-100 overflow-hidden">
+                <Image
+                  src={avatarUrl}
+                  alt="Avatar"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              <div>
+                <h1 className="text-3xl font-semibold">{habit.title}</h1>
+                <span className="inline-block mt-1 text-xs px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400">
+                  {habit.category || "General"}
+                </span>
+              </div>
             </div>
 
-            <div className="space-y-1">
-              <h1 className="text-3xl font-semibold tracking-tight">
-                {habit.title}
-              </h1>
-              <span className="inline-block rounded-full px-3 py-1 text-xs
-                     bg-indigo-500/10 text-indigo-400">
-                {habit.category || "General"}
-              </span>
-            </div>
-          </div>
-
-
-          <p className="text-base-content/70 mt-1">{habit.description}</p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-
-            <div className="rounded-xl bg-base-200 p-4 border border-base-300">
-              <p className="text-sm text-base-content/60">Current Streak</p>
-              <h3 className="text-3xl font-semibold text-indigo-400">
-                {currentStreak} days
-              </h3>
-            </div>
-
-            <div className="rounded-xl bg-base-200 p-4 border border-base-300">
-              <p className="text-sm text-base-content/60">Longest Streak</p>
-              <h3 className="text-3xl font-semibold text-purple-400">
-                {longestStreak} days
-              </h3>
-            </div>
-
-            <div className="rounded-xl bg-base-200 p-4 border border-base-300">
-              <p className="text-sm text-base-content/60">Completion Rate</p>
-              <h3 className="text-3xl font-semibold text-emerald-400">
-                {Math.round(completionRate * 100)}%
-              </h3>
-            </div>
-
-          </div>
-
-          <div className="mt-6">
-            <p className="text-sm text-base-content/60 mb-2">
-              Overall Progress
+            {/* Description */}
+            <p className="text-base-content/70">
+              {habit.description || "No description provided."}
             </p>
-            <div className="h-3 w-full rounded-full bg-base-300 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-linear-to-r from-indigo-500 to-purple-500 transition-all duration-500"
-                style={{ width: `${Math.round(completionRate * 100)}%` }}
-              />
-            </div>
-          </div>
 
-          <div className="card-actions justify-center pt-2">
+            {/* CTA */}
             <button
               onClick={handleLog}
-              disabled={completionLoading}
-              className={`w-full mt-6 rounded-xl py-4 font-medium text-white transition-all duration-300
-                ${completedToday
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-not-allowed"
-                  : "bg-linear-to-r from-indigo-500 to-purple-600 hover:ring-2 hover:ring-indigo-500/40 cursor-pointer shadow-md hover:shadow-lg"
+              disabled={completionLoading || completedToday}
+              className={`w-full py-4 rounded-xl font-medium transition-all duration-300
+                ${
+                  completedToday
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-not-allowed"
+                    : "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:ring-2 hover:ring-indigo-500/40"
                 }`}
             >
               {completionLoading ? (
                 <span className="loading loading-bars loading-md"></span>
               ) : completedToday ? (
-                "Completed Today"
+                "✓ Completed Today"
               ) : (
                 "Mark as Done"
               )}
             </button>
 
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-4">
+              <Stat label="Current Streak" value={`${currentStreak} days`} color="text-indigo-400" />
+              <Stat label="Longest Streak" value={`${longestStreak} days`} color="text-purple-400" />
+              <Stat label="Completion Rate" value={`${Math.round(completionRate * 100)}%`} color="text-emerald-400" />
+            </div>
+
+            {/* Progress */}
+            <div>
+              <p className="text-sm text-base-content/60 mb-2">Overall Progress</p>
+              <div className="h-3 w-full rounded-full bg-base-300 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+                  style={{ width: `${Math.round(completionRate * 100)}%` }}
+                />
+              </div>
+            </div>
           </div>
+
+          {/* ================= RIGHT ================= */}
+          <div className="rounded-xl bg-base-200 p-4 border border-base-300">
+
+            {/* Month Nav */}
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={() =>
+                  setCurrentMonth(
+                    new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+                  )
+                }
+                className="px-3 py-1 rounded-lg bg-base-300 hover:bg-base-100 transition"
+              >
+                ←
+              </button>
+
+              <h3 className="font-medium">
+                {currentMonth.toLocaleString("default", {
+                  month: "long",
+                  year: "numeric",
+                })}
+              </h3>
+
+              <button
+                onClick={() =>
+                  setCurrentMonth(
+                    new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+                  )
+                }
+                className="px-3 py-1 rounded-lg bg-base-300 hover:bg-base-100 transition"
+              >
+                →
+              </button>
+            </div>
+
+            {/* Calendar */}
+            <div className="grid grid-cols-7 gap-2 text-center text-sm">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
+                <div key={day} className="text-base-content/60">{day}</div>
+              ))}
+
+              {generateCalendarDays(currentMonth).map((date, idx) => {
+                if (!date) return <div key={`empty-${idx}`} />;
+
+                const time = date.getTime();
+                const isCompleted = completedDays.has(time);
+                const isToday = time === new Date().setHours(0, 0, 0, 0);
+
+                return (
+                  <div key={time} className="relative group">
+                    <div
+                      className={`h-10 flex items-center justify-center rounded-lg
+                        ${isCompleted ? "bg-emerald-500/20 text-emerald-400" : "bg-base-300 text-base-content/40"}
+                        ${isToday ? "ring-2 ring-indigo-500" : ""}
+                      `}
+                    >
+                      {date.getDate()}
+                    </div>
+
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs rounded-md
+                                    bg-base-100 border border-base-300 opacity-0 group-hover:opacity-100 transition">
+                      {isCompleted ? "Completed" : "Not completed"}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
         </div>
-
       </section>
-
     </main>
-  )
-}
+  );
+};
 
-export default habitDetailPage
+const Stat = ({ label, value, color }) => (
+  <div className="rounded-xl bg-base-200 p-4 border border-base-300">
+    <p className="text-sm text-base-content/60">{label}</p>
+    <h3 className={`text-2xl font-semibold ${color}`}>{value}</h3>
+  </div>
+);
+
+export default HabitDetailPage;
