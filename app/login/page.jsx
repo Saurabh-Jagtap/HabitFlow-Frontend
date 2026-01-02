@@ -3,10 +3,12 @@ import { useState } from "react"
 import axios from "axios"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useAuth } from "../components/AuthProvider.jsx"
 
 export default function Login() {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  const {fetchUser} = useAuth()
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,12 +23,11 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await axios.post(
-        `${apiUrl}/api/v1/user/login`,
+      await axios.post(`${apiUrl}/api/v1/user/login`,
         { email, password },
         { withCredentials: true }
       );
-
+      await fetchUser();
       router.push("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");

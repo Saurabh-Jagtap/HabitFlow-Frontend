@@ -8,6 +8,7 @@ import Image from "next/image";
 import { calculateCurrentStreak } from "@/app/utils/currentStreak.utils";
 import { calculateLongestStreak } from "@/app/utils/longestStreak.utils";
 import { generateCalendarDays } from "@/app/utils/generateCalendar.utils";
+import { SquareCheckBig } from "lucide-react";
 
 const HabitDetailPage = () => {
   const { id } = useParams();
@@ -138,7 +139,7 @@ const HabitDetailPage = () => {
   /* ========================= UI ========================= */
 
   return (
-    <main className="relative min-h-[90vh] bg-base-200 px-4 py-14 overflow-hidden animate-fade-in-up">
+    <main className="relative min-h-[90vh] bg-base-200 px-4 py-2 sm:py-14 overflow-hidden animate-fade-in-up">
 
       {/* Background Glow */}
       <div className="absolute inset-0 -z-10">
@@ -154,21 +155,25 @@ const HabitDetailPage = () => {
           <div className="space-y-6">
 
             {/* Header */}
-            <div className="flex items-center gap-5">
-              <div className="relative h-16 w-16 rounded-full ring-2 ring-indigo-500 ring-offset-2 ring-offset-base-100 overflow-hidden">
-                <Image
-                  src={avatarUrl}
-                  alt="Avatar"
-                  fill
-                  className="object-cover"
-                />
-              </div>
+            <div className="rounded-2xl bg-base-200/60 p-5 sm:p-0 sm:bg-transparent">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4
+                items-center text-center sm:text-left">
 
-              <div>
-                <h1 className="text-3xl font-semibold">{habit.title}</h1>
-                <span className="inline-block mt-1 text-xs px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400">
-                  {habit.category || "General"}
-                </span>
+                <div className="relative h-16 w-16 rounded-full ring-2 ring-indigo-500 ring-offset-2 ring-offset-base-100 overflow-hidden">
+                  <Image
+                    src={avatarUrl}
+                    alt="Avatar"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-semibold">{habit.title}</h1>
+                  <span className="inline-block mt-1 text-xs px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400">
+                    {habit.category || "General"}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -181,24 +186,25 @@ const HabitDetailPage = () => {
             <button
               onClick={handleLog}
               disabled={completionLoading || completedToday}
-              className={`w-full py-4 rounded-xl font-medium transition-all duration-300
-                ${
-                  completedToday
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-not-allowed"
-                    : "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:ring-2 hover:ring-indigo-500/40"
+              className={`w-full py-4 rounded-xl font-medium transition-all duration-300 sm:py-3
+                ${completedToday
+                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-not-allowed"
+                  : "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:shadow-lg hover:ring-2 hover:ring-indigo-500/40"
                 }`}
             >
               {completionLoading ? (
                 <span className="loading loading-bars loading-md"></span>
               ) : completedToday ? (
-                "✓ Completed Today"
+                <span className="flex items-center justify-center gap-2">
+                  Completed Today <SquareCheckBig size={18} />
+                </span>
               ) : (
                 "Mark as Done"
               )}
             </button>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Stat label="Current Streak" value={`${currentStreak} days`} color="text-indigo-400" />
               <Stat label="Longest Streak" value={`${longestStreak} days`} color="text-purple-400" />
               <Stat label="Completion Rate" value={`${Math.round(completionRate * 100)}%`} color="text-emerald-400" />
@@ -217,71 +223,77 @@ const HabitDetailPage = () => {
           </div>
 
           {/* ================= RIGHT ================= */}
-          <div className="rounded-xl bg-base-200 p-4 border border-base-300">
+          <div className="rounded-xl bg-base-200 p-4 border border-base-300
+                order-2 lg:order-0">
 
-            {/* Month Nav */}
-            <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={() =>
-                  setCurrentMonth(
-                    new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
-                  )
-                }
-                className="px-3 py-1 rounded-lg bg-base-300 hover:bg-base-100 transition"
-              >
-                ←
-              </button>
+            <div className="rounded-xl bg-base-200 p-4 border border-base-300
+                max-h-130 overflow-y-auto
+                sm:max-h-none sm:overflow-visible">
 
-              <h3 className="font-medium">
-                {currentMonth.toLocaleString("default", {
-                  month: "long",
-                  year: "numeric",
-                })}
-              </h3>
+              {/* Month Nav */}
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  onClick={() =>
+                    setCurrentMonth(
+                      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+                    )
+                  }
+                  className="px-3 py-1 rounded-lg bg-base-300 hover:bg-base-100 transition"
+                >
+                  ←
+                </button>
 
-              <button
-                onClick={() =>
-                  setCurrentMonth(
-                    new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
-                  )
-                }
-                className="px-3 py-1 rounded-lg bg-base-300 hover:bg-base-100 transition"
-              >
-                →
-              </button>
-            </div>
+                <h3 className="font-medium">
+                  {currentMonth.toLocaleString("default", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </h3>
 
-            {/* Calendar */}
-            <div className="grid grid-cols-7 gap-2 text-center text-sm">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
-                <div key={day} className="text-base-content/60">{day}</div>
-              ))}
+                <button
+                  onClick={() =>
+                    setCurrentMonth(
+                      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+                    )
+                  }
+                  className="px-3 py-1 rounded-lg bg-base-300 hover:bg-base-100 transition"
+                >
+                  →
+                </button>
+              </div>
 
-              {generateCalendarDays(currentMonth).map((date, idx) => {
-                if (!date) return <div key={`empty-${idx}`} />;
+              {/* Calendar */}
+              <div className="grid grid-cols-7 gap-2 text-center text-sm">
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
+                  <div key={day} className="text-base-content/60">{day}</div>
+                ))}
 
-                const time = date.getTime();
-                const isCompleted = completedDays.has(time);
-                const isToday = time === new Date().setHours(0, 0, 0, 0);
+                {generateCalendarDays(currentMonth).map((date, idx) => {
+                  if (!date) return <div key={`empty-${idx}`} />;
 
-                return (
-                  <div key={time} className="relative group">
-                    <div
-                      className={`h-10 flex items-center justify-center rounded-lg
+                  const time = date.getTime();
+                  const isCompleted = completedDays.has(time);
+                  const isToday = time === new Date().setHours(0, 0, 0, 0);
+
+                  return (
+                    <div key={time} className="relative group">
+                      <div
+                        className={`h-10 sm:h-11 flex items-center justify-center rounded-lg
                         ${isCompleted ? "bg-emerald-500/20 text-emerald-400" : "bg-base-300 text-base-content/40"}
                         ${isToday ? "ring-2 ring-indigo-500" : ""}
                       `}
-                    >
-                      {date.getDate()}
-                    </div>
+                      >
+                        {date.getDate()}
+                      </div>
 
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs rounded-md
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs rounded-md
                                     bg-base-100 border border-base-300 opacity-0 group-hover:opacity-100 transition">
-                      {isCompleted ? "Completed" : "Not completed"}
+                        {isCompleted ? "Completed" : "Not completed"}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
 

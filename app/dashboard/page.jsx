@@ -1,10 +1,7 @@
-"use client";
-
+"use client"
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { ProgressStat } from "../components/ProgressRingCard.jsx";
-import { StatCard } from "../components/StatCard.jsx";
 import { RingCard } from "../components/RingCard.jsx";
 import { StreakBadge } from "../components/StreakBadge.jsx";
 
@@ -101,7 +98,6 @@ const Dashboard = () => {
         </div>
 
         {/* Analytics */}
-        {/* ================= DASHBOARD ANALYTICS ================= */}
         {/* ================= DASHBOARD ANALYTICS ================= */}
         {analytics && (
           <section className="space-y-6">

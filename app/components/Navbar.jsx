@@ -3,9 +3,11 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import axios from "axios"
-import { LayoutDashboard, LogOut } from "lucide-react"
+import { House, LayoutDashboard, LogOut } from "lucide-react"
+import { useAuth } from "./AuthProvider.jsx"
 
-const Navbar = ({ user }) => {
+const Navbar = () => {
+  const {user, loading} = useAuth()
   const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -70,6 +72,17 @@ const Navbar = ({ user }) => {
               </li>
 
               <div className="my-2 h-px bg-slate-700" />
+
+              {/* Home */}
+              <li>
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-800 transition"
+                >
+                  <House size={16} />
+                  Home
+                </Link>
+              </li>
 
               {/* Dashboard */}
               <li>
