@@ -1,9 +1,9 @@
-"use client";
-
+"use client"
 import React, { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 const Register = () => {
 
@@ -16,6 +16,7 @@ const Register = () => {
   const [avatar, setAvatar] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
 
@@ -50,7 +51,7 @@ const Register = () => {
   };
 
   return (
-    <main className="relative min-h-[90vh] bg-base-200 overflow-hidden flex items-center justify-center px-6">
+    <main className="relative min-h-screen bg-base-200 flex justify-center items-start sm:items-center px-4 sm:px-6 pt-20 sm:pt-0">
 
       {/* Background Glow */}
       <div className="absolute inset-0 -z-10">
@@ -59,7 +60,9 @@ const Register = () => {
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-md rounded-2xl bg-base-100 border border-base-300 shadow-xl p-8 space-y-6 animate-fade-in-up">
+      <div className="w-full max-w-md rounded-2xl bg-base-100 border border-base-300 shadow-xl p-6 sm:p-8 space-y-6 animate-fade-in-up
+">
+
 
         {/* Header */}
         <div className="text-center space-y-2">
@@ -81,41 +84,65 @@ const Register = () => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
 
+          {/* Fullname */}
           <input
             type="text"
             placeholder="Full name"
-            className="input input-bordered w-full bg-base-200 focus:outline-none focus:border-indigo-500"
+            className="input input-bordered w-full bg-base-200 py-3 focus:outline-none focus:border-indigo-500"
             value={fullname}
             onChange={(e) => setFullname(e.target.value)}
             required
           />
 
+          {/* Username */}
           <input
             type="text"
             placeholder="Username"
-            className="input input-bordered w-full bg-base-200 focus:outline-none focus:border-indigo-500"
+            className="input input-bordered w-full bg-base-200 py-3 focus:outline-none focus:border-indigo-500"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
 
+          {/* Email */}
           <input
             type="email"
             placeholder="Email"
-            className="input input-bordered w-full bg-base-200 focus:outline-none focus:border-indigo-500"
+            className="input input-bordered w-full bg-base-200 py-3 focus:outline-none focus:border-indigo-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <input
-            type="password"
-            placeholder="Password"
-            className="input input-bordered w-full bg-base-200 focus:outline-none focus:border-indigo-500"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          {/* Password */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Password</span>
+            </label>
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="input input-bordered w-full bg-base-200 py-3 pr-12
+                 focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute inset-y-0 right-3 flex items-center
+                 text-base-content/60 hover:text-base-content
+                 transition"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+
 
           {/* Avatar Upload */}
           <div className="space-y-1">
@@ -135,7 +162,7 @@ const Register = () => {
             type="submit"
             disabled={loading}
             className="w-full rounded-xl py-3 font-medium text-white
-                       bg-linear-to-r from-indigo-500 to-purple-600
+                       bg-gradient-to-r from-indigo-500 to-purple-600
                        shadow-md hover:shadow-lg
                        hover:from-indigo-600 hover:to-purple-700
                        transition-all duration-300

@@ -157,7 +157,7 @@ const Dashboard = () => {
             <input
               type="text"
               placeholder="Title"
-              className="input input-bordered bg-base-200"
+              className="input input-bordered bg-base-200 focus:outline-none focus:border-indigo-500"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -166,7 +166,7 @@ const Dashboard = () => {
             <input
               type="text"
               placeholder="Description"
-              className="input input-bordered bg-base-200"
+              className="input input-bordered bg-base-200 focus:outline-none focus:border-indigo-500"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
@@ -174,12 +174,12 @@ const Dashboard = () => {
             <input
               type="text"
               placeholder="Category"
-              className="input input-bordered bg-base-200"
+              className="input input-bordered bg-base-200 focus:outline-none focus:border-indigo-500"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             />
 
-            <div className="md:col-span-3">
+            <div className="md:col-span-3 ">
               <button
                 type="submit"
                 disabled={loading}
