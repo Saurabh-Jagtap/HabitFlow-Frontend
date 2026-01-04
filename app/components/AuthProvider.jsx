@@ -1,5 +1,5 @@
 "use client"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState, useCallback } from "react"
 import axios from "axios"
 
 const AuthContext = createContext(null);
@@ -9,7 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
+    setLoading(true)
     try {
       const res = await axios.get(
         `${apiUrl}/api/v1/user/me`,
@@ -21,11 +22,11 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  },[apiUrl]);
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [fetchUser]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, fetchUser }}>
