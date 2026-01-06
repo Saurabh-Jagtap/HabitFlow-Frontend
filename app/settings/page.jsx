@@ -3,6 +3,7 @@ import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../components/AuthProvider";
 import axios from "axios";
+import AvatarSection from "../components/AvatarSection";
 
 export default function Settings() {
 
@@ -76,20 +77,7 @@ export default function Settings() {
                             <h2 className="text-xl font-medium">Profile</h2>
 
                             {/* Avatar */}
-                            <div className="flex items-center gap-6">
-                                <div className="avatar">
-                                    <div className="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100">
-                                        <img
-                                            src={user?.avatar || "/Profile_avatar_placeholder.png"}
-                                            alt="User avatar"
-                                        />
-                                    </div>
-                                </div>
-
-                                <button className="btn btn-outline btn-sm">
-                                    Change avatar
-                                </button>
-                            </div>
+                            <AvatarSection />
 
                             {/* Inputs */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

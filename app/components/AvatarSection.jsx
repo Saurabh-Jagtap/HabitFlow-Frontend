@@ -1,0 +1,105 @@
+"use client"
+import { useState } from "react"
+import axios from "axios"
+import { useAuth } from "./AuthProvider"
+
+export default function AvatarSection() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const { user, setUser } = useAuth();
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
+    const formData = new FormData();
+    formData.append("avatar", selectedFile);
+
+    try {
+      setUploading(true);
+      const res = await axios.patch(
+        `${apiUrl}/api/v1/user/avatar`,
+        formData,
+        { withCredentials: true }
+      );
+      setUser(res.data.data);
+      setSelectedFile(null);
+      setPreviewUrl(null);
+    } catch (err) {
+      console.error("Avatar upload failed", err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemove = async () => {
+    try {
+      setUploading(true);
+      const res = await axios.delete(
+        `${apiUrl}/api/v1/user/avatar`,
+        { withCredentials: true }
+      );
+      setUser(res.data.data);
+      setSelectedFile(null);
+      setPreviewUrl(null);
+    } catch (err) {
+      console.error("Avatar remove failed", err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const avatarSrc = previewUrl || user?.avatar || "/Profile_avatar_placeholder.png";
+
+  return (
+    <div className="flex items-center gap-6">
+      <div className="avatar">
+        <div className="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100">
+          <img src={avatarSrc} alt="User avatar" />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="btn btn-outline btn-sm">
+          Change avatar
+          <input
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={handleFileChange}
+          />
+        </label>
+
+        {selectedFile && (
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={handleUpload}
+            disabled={uploading}
+          >
+            {uploading ? "Uploading..." : "Save avatar"}
+          </button>
+        )}
+
+        {user?.avatar && !selectedFile && (
+          <button
+            className="btn btn-ghost btn-sm text-error"
+            onClick={handleRemove}
+            disabled={uploading}
+          >
+            Remove avatar
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
