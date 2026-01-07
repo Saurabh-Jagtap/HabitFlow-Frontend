@@ -68,20 +68,31 @@ export default function Login() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            className="input input-bordered w-full bg-base-200 py-3 focus:outline-none focus:border-indigo-500"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <div>
+            <label className="label">
+              <span className="label-text m-2">Email</span>
+            </label>
+            <input
+              type="email"
+              placeholder="Email"
+              className="input input-bordered w-full py-3 rounded-lg px-4
+    bg-base-300/60
+    border border-base-300
+    focus:outline-none
+    focus:ring-2 focus:ring-indigo-500/40
+    focus:border-indigo-500/60
+    transition"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
 
           {/* Password */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Password</span>
+              <span className="label-text m-2">Password</span>
             </label>
 
             <div className="relative">
@@ -90,8 +101,14 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="input input-bordered w-full bg-base-200 py-3 pr-12
-                 focus:outline-none focus:border-indigo-500"
+                className="input input-bordered w-full py-3 pr-12
+                 rounded-lg px-4
+    bg-base-300/60
+    border border-base-300
+    focus:outline-none
+    focus:ring-2 focus:ring-indigo-500/40
+    focus:border-indigo-500/60
+    transition"
                 required
               />
 
@@ -111,11 +128,13 @@ export default function Login() {
             type="submit"
             disabled={loading}
             className="w-full rounded-xl py-3 font-medium text-white
-                       bg-gradient-to-r from-indigo-500 to-purple-600
-                       shadow-md hover:shadow-lg
-                       hover:from-indigo-600 hover:to-purple-700
-                       transition-all duration-300
-                       disabled:opacity-60 cursor-pointer"
+                       bg-gradient-to-r from-indigo-500 to-purple-500
+    text-white
+    shadow-md shadow-indigo-500/20
+    hover:shadow-lg hover:shadow-indigo-500/30
+    hover:scale-[1.02]
+    active:scale-[0.98]
+    transition-all duration-200"
           >
             {loading ? (
               <span className="loading loading-bars loading-md"></span>

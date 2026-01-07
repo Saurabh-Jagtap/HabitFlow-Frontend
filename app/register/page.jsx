@@ -84,39 +84,69 @@ const Register = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
 
           {/* Fullname */}
-          <input
-            type="text"
-            placeholder="Full name"
-            className="input input-bordered w-full bg-base-200 py-3 focus:outline-none focus:border-indigo-500"
-            value={fullname}
-            onChange={(e) => setFullname(e.target.value)}
-            required
-          />
+          <div>
+            <label className="label">
+              <span className="label-text m-2">Full Name</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Full name"
+              className="input input-bordered w-full py-3 bg-base-300/60
+    border border-base-300
+    focus:outline-none
+    focus:ring-2 focus:ring-indigo-500/40
+    focus:border-indigo-500/60
+    transition"
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
+              required
+            />
+          </div>
 
           {/* Username */}
-          <input
-            type="text"
-            placeholder="Username"
-            className="input input-bordered w-full bg-base-200 py-3 focus:outline-none focus:border-indigo-500"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+          <div>
+            <label className="label">
+              <span className="label-text m-2">Username</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Username"
+              className="input input-bordered w-full py-3 bg-base-300/60
+    border border-base-300
+    focus:outline-none
+    focus:ring-2 focus:ring-indigo-500/40
+    focus:border-indigo-500/60
+    transition"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
 
           {/* Email */}
-          <input
-            type="email"
-            placeholder="Email"
-            className="input input-bordered w-full bg-base-200 py-3 focus:outline-none focus:border-indigo-500"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <div>
+            <label className="label">
+              <span className="label-text m-2">Email</span>
+            </label>
+            <input
+              type="email"
+              placeholder="Email"
+              className="input input-bordered w-full py-3 bg-base-300/60
+    border border-base-300
+    focus:outline-none
+    focus:ring-2 focus:ring-indigo-500/40
+    focus:border-indigo-500/60
+    transition"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
           {/* Password */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Password</span>
+              <span className="label-text m-2">Password</span>
             </label>
 
             <div className="relative">
@@ -125,8 +155,13 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="input input-bordered w-full bg-base-200 py-3 pr-12
-                 focus:outline-none focus:border-indigo-500"
+                className="input input-bordered w-full py-3 pr-12
+                 bg-base-300/60
+    border border-base-300
+    focus:outline-none
+    focus:ring-2 focus:ring-indigo-500/40
+    focus:border-indigo-500/60
+    transition"
                 required
               />
 
@@ -145,7 +180,7 @@ const Register = () => {
 
           {/* Avatar Upload */}
           <div className="space-y-1">
-            <label className="text-sm text-base-content/60">
+            <label className="text-sm text-base-content/60 m-2">
               Profile avatar (optional)
             </label>
             <input
@@ -161,10 +196,13 @@ const Register = () => {
             type="submit"
             disabled={loading}
             className="w-full rounded-xl py-3 font-medium text-white
-                       bg-gradient-to-r from-indigo-500 to-purple-600
-                       shadow-md hover:shadow-lg
-                       hover:from-indigo-600 hover:to-purple-700
-                       transition-all duration-300
+                       bg-gradient-to-r from-indigo-500 to-purple-500
+    text-white
+    shadow-md shadow-indigo-500/20
+    hover:shadow-lg hover:shadow-indigo-500/30
+    hover:scale-[1.02]
+    active:scale-[0.98]
+    transition-all duration-200
                        disabled:opacity-60"
           >
             {loading ? (

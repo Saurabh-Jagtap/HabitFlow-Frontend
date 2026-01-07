@@ -61,9 +61,10 @@ export default function AvatarSection() {
   const avatarSrc = previewUrl || user?.avatar || "/Profile_avatar_placeholder.png";
 
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex flex-col sm:flex-row items-center gap-6">
       <div className="avatar">
-        <div className="w-24 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100">
+        <div className="w-24 rounded-full ring ring-indigo-400 ring-offset-2 ring-offset-base-100 
+  transition-transform duration-300 hover:scale-105">
           <img src={avatarSrc} alt="User avatar" />
         </div>
       </div>
@@ -81,7 +82,7 @@ export default function AvatarSection() {
 
         {selectedFile && (
           <button
-            className="btn btn-primary btn-sm"
+            className="btn btn-outline btn-sm"
             onClick={handleUpload}
             disabled={uploading}
           >
