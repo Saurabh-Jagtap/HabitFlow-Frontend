@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../utils/axios.utils.js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
@@ -33,11 +33,10 @@ const Register = () => {
       formData.append("password", password);
       if (avatar) formData.append("avatar", avatar);
 
-      await axios.post(
+      await api.post(
         `${apiUrl}/api/v1/user/register`,
         formData,
         {
-          withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
         }
       );

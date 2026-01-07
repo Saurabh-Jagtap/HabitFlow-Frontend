@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import axios from "axios"
+import api from "../utils/axios.utils.js";
 import { useAuth } from "./AuthProvider"
 
 export default function AvatarSection() {
@@ -27,10 +27,9 @@ export default function AvatarSection() {
 
     try {
       setUploading(true);
-      const res = await axios.patch(
+      const res = await api.patch(
         `${apiUrl}/api/v1/user/avatar`,
-        formData,
-        { withCredentials: true }
+        formData
       );
       setUser(res.data.data);
       setSelectedFile(null);
@@ -45,7 +44,7 @@ export default function AvatarSection() {
   const handleRemove = async () => {
     try {
       setUploading(true);
-      const res = await axios.delete(
+      const res = await api.delete(
         `${apiUrl}/api/v1/user/avatar`,
         { withCredentials: true }
       );

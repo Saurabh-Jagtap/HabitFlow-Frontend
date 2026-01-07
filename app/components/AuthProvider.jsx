@@ -1,6 +1,6 @@
 "use client"
 import { createContext, useContext, useEffect, useState, useCallback } from "react"
-import axios from "axios"
+import api from "../utils/axios.utils.js";
 
 const AuthContext = createContext(null);
 
@@ -12,10 +12,7 @@ export const AuthProvider = ({ children }) => {
   const fetchUser = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await axios.get(
-        `${apiUrl}/api/v1/user/me`,
-        { withCredentials: true }
-      );
+      const res = await api.get(`${apiUrl}/api/v1/user/me`);
       setUser(res.data.data);
     } catch {
       setUser(null);

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import axios from "axios";
+import api from "@/app/utils/axios.utils.js";
 import Image from "next/image";
 
 import { calculateCurrentStreak } from "@/app/utils/currentStreak.utils";
@@ -32,23 +32,19 @@ const HabitDetailPage = () => {
   const [error, setError] = useState(null);
   const [completionLoading, setCompletionLoading] = useState(false);
 
-  const avatarUrl =
-    habit?.userId?.avatar || "/Profile_avatar_placeholder.png";
+  const avatarUrl = habit?.userId?.avatar || "/Profile_avatar_placeholder.png";
 
-  /* ========================= FETCH ========================= */
+  // Fetch
 
   useEffect(() => {
     if (!id) return;
 
     const fetchHabit = async () => {
       try {
-        const habitRes = await axios.get(
-          `${apiUrl}/api/v1/habits/${id}`,
-          { withCredentials: true }
-        );
+        const habitRes = await api.get(`${apiUrl}/api/v1/habits/${id}`);
         setHabit(habitRes.data.data);
 
-        const logsRes = await axios.get(
+        const logsRes = await api.get(
           `${apiUrl}/api/v1/habits/${id}/logs`,
           { withCredentials: true }
         );
@@ -99,13 +95,13 @@ const HabitDetailPage = () => {
     fetchHabit();
   }, [id]);
 
-  /* ========================= LOG TOGGLE ========================= */
+  // Log Toggle
 
   const handleLog = async () => {
     if (completionLoading) return;
     try {
       setCompletionLoading(true);
-      await axios.post(
+      await api.post(
         `${apiUrl}/api/v1/habits/${id}/log`,
         { completed: !completedToday },
         { withCredentials: true }
@@ -122,7 +118,7 @@ const HabitDetailPage = () => {
     }
   };
 
-  /* ========================= STATES ========================= */
+  // States
 
   if (loading) {
     return (
@@ -136,7 +132,7 @@ const HabitDetailPage = () => {
     return <div className="text-center mt-20">Something went wrong</div>;
   }
 
-  /* ========================= UI ========================= */
+  // UI
 
   return (
     <main className="relative min-h-[90vh] bg-base-200 px-4 py-2 sm:py-14 overflow-hidden animate-fade-in-up">
@@ -151,7 +147,7 @@ const HabitDetailPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-          {/* ================= LEFT ================= */}
+          {/* LEFT */}
           <div className="space-y-6">
 
             {/* Header */}
@@ -222,7 +218,7 @@ const HabitDetailPage = () => {
             </div>
           </div>
 
-          {/* ================= RIGHT ================= */}
+          {/* RIGHT */}
           <div className="rounded-xl bg-base-200 p-4 border border-base-300
                 order-2 lg:order-0">
 

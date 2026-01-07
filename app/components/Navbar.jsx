@@ -2,12 +2,12 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import axios from "axios"
+import api from "../utils/axios.utils.js"
 import { House, LayoutDashboard, LogOut, Settings } from "lucide-react"
 import { useAuth } from "./AuthProvider.jsx"
 
 const Navbar = () => {
-  const { user, loading } = useAuth()
+  const { user, setUser, loading } = useAuth()
   const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -15,11 +15,11 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
+      await api.post(
         `${apiUrl}/api/v1/user/logout`,
-        {},
-        { withCredentials: true }
+        {}
       );
+      setUser(null)
       router.push("/login");
     } catch (error) {
       console.error("Logout failed", error);

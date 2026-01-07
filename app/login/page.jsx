@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import axios from "axios"
+import api from "../utils/axios.utils.js"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "../components/AuthProvider.jsx"
@@ -25,9 +25,8 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await axios.post(`${apiUrl}/api/v1/user/login`,
-        { email, password },
-        { withCredentials: true }
+      await api.post(`${apiUrl}/api/v1/user/login`,
+        { email, password }
       );
       await fetchUser();
       router.push("/dashboard");

@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axios.utils.js";
 import Link from "next/link";
 import { RingCard } from "../components/RingCard.jsx";
 import { StreakBadge } from "../components/StreakBadge.jsx";
@@ -25,9 +25,7 @@ const Dashboard = () => {
   const fetchHabits = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${apiUrl}/api/v1/habits`, {
-        withCredentials: true,
-      });
+      const res = await api.get(`${apiUrl}/api/v1/habits`);
       setHabits(res.data.data);
     } catch {
       setError("Failed to load habits");
@@ -38,10 +36,8 @@ const Dashboard = () => {
 
   const fetchAnalytics = async () => {
     try {
-      const res = await axios.get(
-        `${apiUrl}/api/v1/analytics/dashboard`,
-        { withCredentials: true }
-      );
+      const res = await api.get(
+        `${apiUrl}/api/v1/analytics/dashboard`);
       setAnalytics(res.data.data);
     } catch {
       console.error("Failed to load analytics");
@@ -52,10 +48,9 @@ const Dashboard = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await axios.post(
+      await api.post(
         `${apiUrl}/api/v1/habits`,
-        { title, description, category },
-        { withCredentials: true }
+        { title, description, category }
       );
 
       setTitle("");

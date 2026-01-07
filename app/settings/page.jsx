@@ -2,7 +2,7 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../components/AuthProvider";
-import axios from "axios";
+import api from "../utils/axios.utils.js";
 import AvatarSection from "../components/AvatarSection";
 
 export default function Settings() {
@@ -32,12 +32,11 @@ export default function Settings() {
 
         e.preventDefault();
         try {
-            const response = await axios.patch(`${apiUrl}/api/v1/user/settings`,
+            const response = await api.patch(`${apiUrl}/api/v1/user/settings`,
                 {
                     fullname: formData.fullname,
                     username: formData.username
-                },
-                { withCredentials: true }
+                }
             )
             setUser(response.data.data)
             console.log("API response:", response.data.data);
