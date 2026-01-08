@@ -2,6 +2,7 @@
 import { useState } from "react"
 import api from "../utils/axios.utils.js";
 import { useAuth } from "./AuthProvider"
+import toast from "react-hot-toast";
 
 export default function AvatarSection() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -25,17 +26,20 @@ export default function AvatarSection() {
     const formData = new FormData();
     formData.append("avatar", selectedFile);
 
+    const toastId = toast.loading("Updating avatar...")
+
     try {
       setUploading(true);
       const res = await api.patch(
         `${apiUrl}/api/v1/user/avatar`,
         formData
       );
+      toast.success("Avatar updated", { id: toastId })
       setUser(res.data.data);
       setSelectedFile(null);
       setPreviewUrl(null);
     } catch (err) {
-      console.error("Avatar upload failed", err);
+      toast.error("Avatar update failed", { id: toastId })
     } finally {
       setUploading(false);
     }

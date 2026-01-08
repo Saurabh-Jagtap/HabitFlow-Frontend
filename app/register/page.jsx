@@ -4,6 +4,7 @@ import api from "../utils/axios.utils.js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Register = () => {
 
@@ -25,6 +26,8 @@ const Register = () => {
     setError("");
     setLoading(true);
 
+    const toastId = toast.loading("Creating account...")
+
     try {
       const formData = new FormData();
       formData.append("fullname", fullname);
@@ -40,17 +43,17 @@ const Register = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-
+      toast.success("Account created successfully!", {id:toastId})
       router.push("/login");
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      toast.error(err.response?.data?.message || "Registration failed", {id:toastId})
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="relative min-h-screen bg-base-200 flex justify-center items-start sm:items-center px-4 sm:px-6 pt-20 sm:pt-0">
+<main className="relative min-h-[90vh] bg-base-200 flex justify-center items-center px-4 sm:px-6 py-12 sm:py-0">
 
       {/* Background Glow */}
       <div className="absolute inset-0 -z-10">
@@ -59,9 +62,7 @@ const Register = () => {
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-md rounded-2xl bg-base-100 border border-base-300 shadow-xl p-6 sm:p-8 space-y-6 animate-fade-in-up
-">
-
+      <div className="w-full max-w-md rounded-2xl bg-base-100 border border-base-300 shadow-xl p-6 sm:p-8 space-y-6 animate-fade-in-up">
 
         {/* Header */}
         <div className="text-center space-y-2">
@@ -81,17 +82,17 @@ const Register = () => {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
 
           {/* Fullname */}
           <div>
             <label className="label">
-              <span className="label-text m-2">Full Name</span>
+              <span className="label-text mb-1">Full Name</span>
             </label>
             <input
               type="text"
               placeholder="Full name"
-              className="input input-bordered w-full py-3 bg-base-300/60
+              className="input input-bordered w-full py-2.5 bg-base-300/60
     border border-base-300
     focus:outline-none
     focus:ring-2 focus:ring-indigo-500/40
@@ -106,12 +107,12 @@ const Register = () => {
           {/* Username */}
           <div>
             <label className="label">
-              <span className="label-text m-2">Username</span>
+              <span className="label-text mb-1">Username</span>
             </label>
             <input
               type="text"
               placeholder="Username"
-              className="input input-bordered w-full py-3 bg-base-300/60
+              className="input input-bordered w-full py-2.5 bg-base-300/60
     border border-base-300
     focus:outline-none
     focus:ring-2 focus:ring-indigo-500/40
@@ -126,12 +127,12 @@ const Register = () => {
           {/* Email */}
           <div>
             <label className="label">
-              <span className="label-text m-2">Email</span>
+              <span className="label-text mb-1">Email</span>
             </label>
             <input
               type="email"
               placeholder="Email"
-              className="input input-bordered w-full py-3 bg-base-300/60
+              className="input input-bordered w-full py-2.5 bg-base-300/60
     border border-base-300
     focus:outline-none
     focus:ring-2 focus:ring-indigo-500/40
@@ -146,7 +147,7 @@ const Register = () => {
           {/* Password */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text m-2">Password</span>
+              <span className="label-text mb-1">Password</span>
             </label>
 
             <div className="relative">
@@ -155,7 +156,7 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="input input-bordered w-full py-3 pr-12
+                className="input input-bordered w-full py-2.5 pr-12
                  bg-base-300/60
     border border-base-300
     focus:outline-none

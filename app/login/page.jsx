@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "../components/AuthProvider.jsx"
 import { Eye, EyeOff } from "lucide-react"
+import toast from "react-hot-toast"
 
 export default function Login() {
 
@@ -24,21 +25,23 @@ export default function Login() {
     setError("");
     setLoading(true);
 
+    const toastId = toast.loading("Logging in...")
     try {
       await api.post(`${apiUrl}/api/v1/user/login`,
         { email, password }
       );
       await fetchUser();
+      toast.success("Welcome back!", {id:toastId})
       router.push("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed", {id:toastId})
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="relative min-h-screen bg-base-200 flex justify-center items-start sm:items-center px-4 sm:px-6 pt-20 sm:pt-0">
+    <main className="relative min-h-[90vh] bg-base-200 flex justify-center items-center px-4 sm:px-6 py-12 sm:py-0">
 
       {/* Background glow */}
       <div className="absolute inset-0 -z-10">
@@ -70,7 +73,7 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="label">
-              <span className="label-text m-2">Email</span>
+              <span className="label-text mb-1">Email</span>
             </label>
             <input
               type="email"
@@ -92,7 +95,7 @@ export default function Login() {
           {/* Password */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text m-2">Password</span>
+              <span className="label-text mb-1">Password</span>
             </label>
 
             <div className="relative">
@@ -127,7 +130,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl py-3 font-medium text-white
+            className="w-full rounded-xl py-3 font-medium
                        bg-gradient-to-r from-indigo-500 to-purple-500
     text-white
     shadow-md shadow-indigo-500/20

@@ -5,31 +5,35 @@ import api from "../utils/axios.utils";
 import AvatarSection from "../components/AvatarSection";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Settings() {
   const { user, loading, setUser } = useAuth();
   const hasInitialized = useRef(false);
   const router = useRouter();
 
-//  PROFILE STATE
+  //  PROFILE STATE
   const [profileData, setProfileData] = useState({
     fullname: "",
     username: "",
     email: "",
   });
 
-//  PASSWORD STATE
+  //  PASSWORD STATE
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
 
-//   INIT FORM DATA
+  //   INIT FORM DATA
   useEffect(() => {
     if (user && !hasInitialized.current) {
       setProfileData({
@@ -41,10 +45,12 @@ export default function Settings() {
     }
   }, [user]);
 
-//   PROFILE UPDATE
+  //   PROFILE UPDATE
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setSavingProfile(true);
+
+    const toastId = toast.loading("Saving changes...")
 
     try {
       const res = await api.patch("/api/v1/user/settings", {
@@ -52,17 +58,16 @@ export default function Settings() {
         username: profileData.username,
       });
 
+      toast.success("Profile updated successfully", { id: toastId });
       setUser(res.data.data);
-      alert("Profile updated successfully");
     } catch (err) {
-      console.error(err);
-      alert("Failed to update profile");
+      toast.error("Failed to update profile", { id: toastId })
     } finally {
       setSavingProfile(false);
     }
   };
 
-//   PASSWORD UPDATE
+  //   PASSWORD UPDATE
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
 
@@ -78,13 +83,15 @@ export default function Settings() {
 
     setSavingPassword(true);
 
+    const toastId = toast.loading("Updating password...")
+
     try {
       await api.patch("/api/v1/user/password", {
         currentPassword,
         newPassword,
       });
-
-      alert("Password updated. Please log in again.");
+      toast.success("Password updated. Please log in again.", { id: toastId })
+      alert();
       setPasswordData({
         currentPassword: "",
         newPassword: "",
@@ -92,8 +99,7 @@ export default function Settings() {
       });
       router.push('/login')
     } catch (err) {
-      console.error(err);
-      alert("Failed to update password");
+      toast.error("Failed to update password", { id: toastId })
     } finally {
       setSavingPassword(false);
     }
@@ -126,10 +132,10 @@ export default function Settings() {
 
             <AvatarSection />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {["fullname", "username"].map((field) => (
-                <div key={field} className="space-y-1">
-                  <label className="text-sm text-base-content/60 capitalize">
+                <div key={field} className="flex flex-col gap-2">
+                  <label className="text-sm text-base-content/70 capitalize font-medium ml-1">
                     {field}
                   </label>
                   <input
@@ -140,29 +146,39 @@ export default function Settings() {
                         [field]: e.target.value,
                       })
                     }
-                    className="w-full rounded-lg px-4 py-2 bg-base-300/60 border border-base-300
-                               focus:ring-2 focus:ring-indigo-500/40 transition"
+                    className="w-full rounded-lg px-4 py-3 bg-base-300/60 border border-base-300
+                               focus:outline-none
+                               focus:ring-2 focus:ring-indigo-500/40
+                               focus:border-indigo-500/60
+                               transition"
                   />
                 </div>
               ))}
 
-              <div className="space-y-1">
-                <label className="text-sm text-base-content/60">Email</label>
+              {/* Email Field - Standardized to match above */}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm text-base-content/70 font-medium ml-1 cursor-not-allowed">
+                  Email
+                </label>
                 <input
                   value={profileData.email}
                   disabled
-                  className="w-full rounded-lg px-4 py-2 bg-base-300/40 border border-base-300 opacity-60"
+                  className="w-full rounded-lg px-4 py-3 bg-base-300/40 border border-base-300 opacity-60 cursor-not-allowed"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-2">
               <button
                 disabled={savingProfile}
                 className="px-6 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500
                            text-white shadow-md hover:scale-[1.02] transition"
               >
-                {savingProfile ? (<span className="loading loading-bars loading-md"></span>) : "Save Profile"}
+                {savingProfile ? (
+                  <span className="loading loading-bars loading-md"></span>
+                ) : (
+                  "Save Profile"
+                )}
               </button>
             </div>
           </form>
@@ -173,48 +189,114 @@ export default function Settings() {
           <form onSubmit={handlePasswordSubmit} className="space-y-6">
             <h2 className="text-xl font-medium text-error">Security</h2>
             <p className="text-sm text-base-content/60">
-              Updating password will log you out from all devices.
+              Updating your password will log you out from all devices.
             </p>
 
-            {["currentPassword", "newPassword", "confirmPassword"].map(
-              (field) => (
-                <div key={field} className="relative space-y-1">
-                  <label className="text-sm text-base-content/60 capitalize">
-                    {field.replace(/([A-Z])/g, " $1")}
-                  </label>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={passwordData[field]}
-                    onChange={(e) =>
-                      setPasswordData({
-                        ...passwordData,
-                        [field]: e.target.value,
-                      })
-                    }
-                    className="w-full rounded-lg px-4 py-2 bg-base-300/60 border border-rose-500/30
-                               focus:ring-2 focus:ring-rose-500/40 transition"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((p) => !p)}
-                    className="absolute right-3 top-9 text-base-content/60"
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-              )
-            )}
+            {/* Current Password */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm text-base-content/70 font-medium ml-1">
+                Current Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={passwordData.currentPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      currentPassword: e.target.value,
+                    })
+                  }
+                  className="w-full rounded-lg px-4 py-3 bg-base-300/60 border border-rose-500/30
+                             focus:outline-none focus:ring-2 focus:ring-rose-500/40 transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword((p) => !p)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2
+                             text-base-content/60 hover:text-base-content
+                             transition"
+                >
+                  {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
 
-            <div className="flex justify-end">
+            {/* New Password */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm text-base-content/70 font-medium ml-1">
+                New Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  value={passwordData.newPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      newPassword: e.target.value,
+                    })
+                  }
+                  className="w-full rounded-lg px-4 py-3 bg-base-300/60 border border-rose-500/30
+                             focus:outline-none focus:ring-2 focus:ring-rose-500/40 transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword((p) => !p)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2
+                             text-base-content/60 hover:text-base-content
+                             transition"
+                >
+                  {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm text-base-content/70 font-medium ml-1">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={passwordData.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                  className="w-full rounded-lg px-4 py-3 bg-base-300/60 border border-rose-500/30
+                             focus:outline-none focus:ring-2 focus:ring-rose-500/40 transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((p) => !p)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2
+                             text-base-content/60 hover:text-base-content
+                             transition"
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-2">
               <button
                 disabled={savingPassword}
                 className="px-6 py-2 rounded-lg bg-gradient-to-r from-rose-500 to-red-600
                            text-white shadow-md hover:scale-[1.02] transition"
               >
-                {savingPassword ? (<span className="loading loading-bars loading-md"></span>) : "Update Password"}
+                {savingPassword ? (
+                  <span className="loading loading-bars loading-md"></span>
+                ) : (
+                  "Update Password"
+                )}
               </button>
             </div>
           </form>
+
         </div>
       </div>
     </div>

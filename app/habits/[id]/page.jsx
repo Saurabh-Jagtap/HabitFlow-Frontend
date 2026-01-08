@@ -1,14 +1,13 @@
-"use client";
-
+"use client"
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import api from "@/app/utils/axios.utils.js";
 import Image from "next/image";
-
 import { calculateCurrentStreak } from "@/app/utils/currentStreak.utils";
 import { calculateLongestStreak } from "@/app/utils/longestStreak.utils";
 import { generateCalendarDays } from "@/app/utils/generateCalendar.utils";
 import { SquareCheckBig } from "lucide-react";
+import toast from "react-hot-toast";
 
 const HabitDetailPage = () => {
   const { id } = useParams();
@@ -98,6 +97,9 @@ const HabitDetailPage = () => {
   // Log Toggle
 
   const handleLog = async () => {
+
+    const toastId = toast.loading("Loading...")
+
     if (completionLoading) return;
     try {
       setCompletionLoading(true);
@@ -112,7 +114,7 @@ const HabitDetailPage = () => {
       await new Promise(r => setTimeout(r, 300));
       window.location.reload();
     } catch {
-      setError("Failed to update habit");
+      toast.error("Failed to update habit", {id:toastId})
     } finally {
       setCompletionLoading(false);
     }
