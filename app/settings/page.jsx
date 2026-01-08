@@ -5,7 +5,7 @@ import api from "../utils/axios.utils";
 import AvatarSection from "../components/AvatarSection";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Shield } from "lucide-react";
+import { ArrowLeft, Shield } from "lucide-react";
 import Link from "next/link";
 
 export default function Settings() {
@@ -116,6 +116,10 @@ export default function Settings() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 animate-fade-in-up">
+      <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm text-base-content/60 hover:text-base-content transition mb-6">
+        <ArrowLeft size={16} />
+        Back to Dashboard
+      </Link>
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-semibold">Account Settings</h1>

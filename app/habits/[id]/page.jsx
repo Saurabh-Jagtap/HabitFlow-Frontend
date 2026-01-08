@@ -6,8 +6,9 @@ import Image from "next/image";
 import { calculateCurrentStreak } from "@/app/utils/currentStreak.utils";
 import { calculateLongestStreak } from "@/app/utils/longestStreak.utils";
 import { generateCalendarDays } from "@/app/utils/generateCalendar.utils";
-import { SquareCheckBig } from "lucide-react";
+import { ArrowLeft, SquareCheckBig } from "lucide-react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const HabitDetailPage = () => {
   const { id } = useParams();
@@ -114,7 +115,7 @@ const HabitDetailPage = () => {
       await new Promise(r => setTimeout(r, 300));
       window.location.reload();
     } catch {
-      toast.error("Failed to update habit", {id:toastId})
+      toast.error("Failed to update habit", { id: toastId })
     } finally {
       setCompletionLoading(false);
     }
@@ -146,6 +147,12 @@ const HabitDetailPage = () => {
       </div>
 
       <section className="max-w-6xl mt-7 mx-auto rounded-2xl bg-base-100 border border-base-300 shadow-xl p-6">
+
+        {/* Back link */}
+        <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm text-base-content/60 hover:text-base-content transition mb-4">
+          <ArrowLeft size={16} />
+          Back to Dashboard
+        </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
