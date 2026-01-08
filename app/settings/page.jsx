@@ -3,9 +3,10 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../components/AuthProvider";
 import api from "../utils/axios.utils";
 import AvatarSection from "../components/AvatarSection";
-import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Shield } from "lucide-react";
+import Link from "next/link";
 
 export default function Settings() {
   const { user, loading, setUser } = useAuth();
@@ -181,120 +182,32 @@ export default function Settings() {
                 )}
               </button>
             </div>
-          </form>
 
-          <div className="divider" />
+            {/* Security Section */}
+            <div className="mt-8 bg-base-100 rounded-xl p-6 shadow-sm border border-base-300">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500">
+                  <Shield size={20} />
+                </div>
 
-          {/* PASSWORD FORM */}
-          <form onSubmit={handlePasswordSubmit} className="space-y-6">
-            <h2 className="text-xl font-medium text-error">Security</h2>
-            <p className="text-sm text-base-content/60">
-              Updating your password will log you out from all devices.
-            </p>
+                <div className="flex-1">
+                  <h3 className="font-semibold">Security</h3>
+                  <p className="text-sm text-base-content/60">
+                    Change password or delete your account
+                  </p>
+                </div>
 
-            {/* Current Password */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-base-content/70 font-medium ml-1">
-                Current Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showCurrentPassword ? "text" : "password"}
-                  value={passwordData.currentPassword}
-                  onChange={(e) =>
-                    setPasswordData({
-                      ...passwordData,
-                      currentPassword: e.target.value,
-                    })
-                  }
-                  className="w-full rounded-lg px-4 py-3 bg-base-300/60 border border-rose-500/30
-                             focus:outline-none focus:ring-2 focus:ring-rose-500/40 transition"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowCurrentPassword((p) => !p)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2
-                             text-base-content/60 hover:text-base-content
-                             transition"
+                <Link
+                  href="/security"
+                  className="px-4 py-2 rounded-lg text-sm font-medium
+        bg-gradient-to-r from-indigo-500 to-purple-500
+        text-white hover:scale-[1.03] active:scale-[0.97] transition"
                 >
-                  {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
+                  Manage
+                </Link>
               </div>
             </div>
 
-            {/* New Password */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-base-content/70 font-medium ml-1">
-                New Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showNewPassword ? "text" : "password"}
-                  value={passwordData.newPassword}
-                  onChange={(e) =>
-                    setPasswordData({
-                      ...passwordData,
-                      newPassword: e.target.value,
-                    })
-                  }
-                  className="w-full rounded-lg px-4 py-3 bg-base-300/60 border border-rose-500/30
-                             focus:outline-none focus:ring-2 focus:ring-rose-500/40 transition"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowNewPassword((p) => !p)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2
-                             text-base-content/60 hover:text-base-content
-                             transition"
-                >
-                  {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Confirm Password */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-base-content/70 font-medium ml-1">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={passwordData.confirmPassword}
-                  onChange={(e) =>
-                    setPasswordData({
-                      ...passwordData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                  className="w-full rounded-lg px-4 py-3 bg-base-300/60 border border-rose-500/30
-                             focus:outline-none focus:ring-2 focus:ring-rose-500/40 transition"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword((p) => !p)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2
-                             text-base-content/60 hover:text-base-content
-                             transition"
-                >
-                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex justify-end pt-2">
-              <button
-                disabled={savingPassword}
-                className="px-6 py-2 rounded-lg bg-gradient-to-r from-rose-500 to-red-600
-                           text-white shadow-md hover:scale-[1.02] transition"
-              >
-                {savingPassword ? (
-                  <span className="loading loading-bars loading-md"></span>
-                ) : (
-                  "Update Password"
-                )}
-              </button>
-            </div>
           </form>
 
         </div>
