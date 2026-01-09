@@ -187,7 +187,7 @@ const Register = () => {
               className="w-full rounded-xl py-3.5 font-bold text-white
                          bg-gradient-to-r from-indigo-500 to-purple-500
                          shadow-lg shadow-indigo-500/20
-                         hover:scale-[1.01] active:scale-[0.98]
+                         hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98]
                          transition-all duration-200 disabled:opacity-60"
             >
               {loading ? (
