@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar.jsx";
 import { AuthProvider } from "./components/AuthProvider";
 import Footer from "./components/Footer";
 import { Toaster } from "react-hot-toast";
+import MobileNav from "./components/MobileNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,11 +22,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <AuthProvider>
           <Navbar />
-          {children}
+          <div className="flex-1 flex flex-col w-full pb-20 sm:pb-0">
+            {children}
+          </div>
           <Toaster
           position="top-center"
           toastOptions={{
@@ -37,6 +40,7 @@ export default function RootLayout({ children }) {
           }}
         />
           <Footer />
+          <MobileNav/>
         </AuthProvider>
       </body>
     </html>

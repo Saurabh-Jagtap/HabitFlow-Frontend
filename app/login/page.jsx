@@ -1,16 +1,14 @@
-"use client"
-import { useState } from "react"
-import api from "../utils/axios.utils.js"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useAuth } from "../components/AuthProvider.jsx"
-import { Eye, EyeOff } from "lucide-react"
-import toast from "react-hot-toast"
+"use client";
+import { useState } from "react";
+import api from "../utils/axios.utils.js";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../components/AuthProvider.jsx";
+import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function Login() {
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL
-  const { fetchUser } = useAuth()
+  const { fetchUser } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,39 +23,38 @@ export default function Login() {
     setError("");
     setLoading(true);
 
-    const toastId = toast.loading("Logging in...")
+    const toastId = toast.loading("Logging in...");
     try {
-      await api.post(`${apiUrl}/api/v1/user/login`,
-        { email, password }
-      );
+      await api.post(`/api/v1/user/login`, { email, password });
       await fetchUser();
-      toast.success("Welcome back!", {id:toastId})
+      toast.success("Welcome back!", { id: toastId });
       router.push("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed", {id:toastId})
+      toast.error(err.response?.data?.message || "Login failed", {
+        id: toastId,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="relative min-h-[90vh] bg-base-200 flex justify-center items-center px-4 sm:px-6 py-12 sm:py-0">
 
+    <main className="relative flex-1 flex justify-center items-center bg-base-200 overflow-hidden px-4 py-12 sm:px-6">
+      
       {/* Background glow */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/4 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
-        <div className="absolute top-1/3 right-1/4 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl"></div>
+      <div className="absolute inset-0 -z-10 pointer-events-none">
+        <div className="absolute top-1/4 -left-10 sm:left-1/4 h-56 w-56 sm:h-72 sm:w-72 rounded-full bg-indigo-500/20 blur-3xl opacity-50 sm:opacity-100"></div>
+        <div className="absolute top-1/3 -right-10 sm:right-1/4 h-56 w-56 sm:h-72 sm:w-72 rounded-full bg-purple-500/20 blur-3xl opacity-50 sm:opacity-100"></div>
       </div>
 
       {/* Card */}
       <div className="w-full max-w-md rounded-2xl bg-base-100 border border-base-300 shadow-xl p-6 sm:p-8 space-y-6 animate-fade-in-up">
-
+        
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-semibold">
-            Welcome back
-          </h1>
-          <p className="text-base-content/60">
+          <h1 className="text-2xl sm:text-3xl font-semibold">Welcome back</h1>
+          <p className="text-sm sm:text-base text-base-content/60">
             Log in to continue building habits
           </p>
         </div>
@@ -79,18 +76,17 @@ export default function Login() {
               type="email"
               placeholder="Email"
               className="input input-bordered w-full py-3 rounded-lg px-4
-    bg-base-300/60
-    border border-base-300
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500/40
-    focus:border-indigo-500/60
-    transition"
+                        bg-base-300/60
+                        border border-base-300
+                        focus:outline-none
+                        focus:ring-2 focus:ring-indigo-500/40
+                        focus:border-indigo-500/60
+                        transition"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
-
 
           {/* Password */}
           <div className="form-control">
@@ -105,13 +101,13 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 className="input input-bordered w-full py-3 pr-12
-                 rounded-lg px-4
-    bg-base-300/60
-    border border-base-300
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500/40
-    focus:border-indigo-500/60
-    transition"
+                          rounded-lg px-4
+                          bg-base-300/60
+                          border border-base-300
+                          focus:outline-none
+                          focus:ring-2 focus:ring-indigo-500/40
+                          focus:border-indigo-500/60
+                          transition"
                 required
               />
 
@@ -119,8 +115,8 @@ export default function Login() {
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute inset-y-0 right-3 flex items-center
-                 text-base-content/60 hover:text-base-content
-                 transition"
+                          text-base-content/60 hover:text-base-content
+                          transition"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -131,13 +127,13 @@ export default function Login() {
             type="submit"
             disabled={loading}
             className="w-full rounded-xl py-3 font-medium
-                       bg-gradient-to-r from-indigo-500 to-purple-500
-    text-white
-    shadow-md shadow-indigo-500/20
-    hover:shadow-lg hover:shadow-indigo-500/30
-    hover:scale-[1.02]
-    active:scale-[0.98]
-    transition-all duration-200"
+                      bg-gradient-to-r from-indigo-500 to-purple-500
+                      text-white
+                      shadow-md shadow-indigo-500/20
+                      hover:shadow-lg hover:shadow-indigo-500/30
+                      hover:scale-[1.02]
+                      active:scale-[0.98]
+                      transition-all duration-200"
           >
             {loading ? (
               <span className="loading loading-bars loading-md"></span>
@@ -157,7 +153,6 @@ export default function Login() {
             Create one
           </Link>
         </p>
-
       </div>
     </main>
   );

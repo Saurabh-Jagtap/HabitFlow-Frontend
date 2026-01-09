@@ -8,8 +8,6 @@ import toast from "react-hot-toast";
 
 const Register = () => {
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL
-
   const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -37,39 +35,39 @@ const Register = () => {
       if (avatar) formData.append("avatar", avatar);
 
       await api.post(
-        `${apiUrl}/api/v1/user/register`,
+        `/api/v1/user/register`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      toast.success("Account created successfully!", {id:toastId})
+      toast.success("Account created successfully!", { id: toastId })
       router.push("/login");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Registration failed", {id:toastId})
+      toast.error(err.response?.data?.message || "Registration failed", { id: toastId })
     } finally {
       setLoading(false);
     }
   };
 
   return (
-<main className="relative min-h-[90vh] bg-base-200 flex justify-center items-center px-4 sm:px-6 py-12 sm:py-0">
+    <main className="relative flex-1 bg-base-200 flex justify-center items-center px-4 sm:px-6 py-8 sm:py-12 overflow-y-auto">
 
       {/* Background Glow */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/4 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
-        <div className="absolute top-1/3 right-1/4 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl"></div>
+      <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 h-72 w-72 rounded-full bg-indigo-500/10 blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-1/4 h-72 w-72 rounded-full bg-purple-500/10 blur-3xl"></div>
       </div>
 
       {/* Card */}
       <div className="w-full max-w-md rounded-2xl bg-base-100 border border-base-300 shadow-xl p-6 sm:p-8 space-y-6 animate-fade-in-up">
 
         {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-semibold">
+        <div className="text-center space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
             Create your account
           </h1>
-          <p className="text-base-content/60">
+          <p className="text-sm sm:text-base text-base-content/60">
             Start building better habits today
           </p>
         </div>
@@ -84,60 +82,56 @@ const Register = () => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-3">
 
-          {/* Fullname */}
-          <div>
-            <label className="label">
-              <span className="label-text mb-1">Full Name</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Full name"
-              className="input input-bordered w-full py-2.5 bg-base-300/60
-    border border-base-300
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500/40
-    focus:border-indigo-500/60
-    transition"
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
-              required
-            />
-          </div>
+          <div className="grid grid-cols-1 gap-3">
+            {/* Fullname */}
+            <div>
+              <label className="label py-1">
+                <span className="label-text text-xs font-medium">Full Name</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Full Name"
+                className="input input-bordered w-full py-2.5 bg-base-300/40 border-base-300 focus:outline-none
+                        focus:ring-2 focus:ring-indigo-500/40
+                        focus:border-indigo-500/60
+                        transition"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+                required
+              />
+            </div>
 
-          {/* Username */}
-          <div>
-            <label className="label">
-              <span className="label-text mb-1">Username</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Username"
-              className="input input-bordered w-full py-2.5 bg-base-300/60
-    border border-base-300
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500/40
-    focus:border-indigo-500/60
-    transition"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+            {/* Username */}
+            <div>
+              <label className="label py-1">
+                <span className="label-text text-xs font-medium">Username</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Username"
+                className="input input-bordered w-full py-2.5 bg-base-300/40 border-base-300 focus:outline-none
+                        focus:ring-2 focus:ring-indigo-500/40
+                        focus:border-indigo-500/60
+                        transition"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
           </div>
 
           {/* Email */}
           <div>
-            <label className="label">
-              <span className="label-text mb-1">Email</span>
+            <label className="label py-1">
+              <span className="label-text text-xs font-medium">Email</span>
             </label>
             <input
               type="email"
-              placeholder="Email"
-              className="input input-bordered w-full py-2.5 bg-base-300/60
-    border border-base-300
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500/40
-    focus:border-indigo-500/60
-    transition"
+              placeholder="email@gmail.com"
+              className="input input-bordered w-full py-2.5 bg-base-300/40 border-base-300 focus:outline-none
+                        focus:ring-2 focus:ring-indigo-500/40
+                        focus:border-indigo-500/60
+                        transition"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -145,73 +139,64 @@ const Register = () => {
           </div>
 
           {/* Password */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text mb-1">Password</span>
+          <div>
+            <label className="label py-1">
+              <span className="label-text text-xs font-medium">Password</span>
             </label>
-
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="input input-bordered w-full py-2.5 pr-12
-                 bg-base-300/60
-    border border-base-300
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500/40
-    focus:border-indigo-500/60
-    transition"
+                className="input input-bordered w-full py-2.5 pr-12 bg-base-300/40 border-base-300 focus:outline-none
+                        focus:ring-2 focus:ring-indigo-500/40
+                        focus:border-indigo-500/60
+                        transition"
                 required
               />
-
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-3 flex items-center
-                 text-base-content/60 hover:text-base-content
-                 transition"
+                className="absolute inset-y-0 right-3 flex items-center text-base-content/60 hover:text-base-content"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
-
           {/* Avatar Upload */}
-          <div className="space-y-1">
-            <label className="text-sm text-base-content/60 m-2">
-              Profile avatar (optional)
+          <div className="pt-1">
+            <label className="label py-1">
+              <span className="label-text text-xs font-medium text-base-content/60">Profile avatar (optional)</span>
             </label>
-            <input
-              type="file"
-              accept="image/*"
-              className="file-input file-input-bordered w-full bg-base-200"
-              onChange={(e) => setAvatar(e.target.files[0])}
-            />
+            <div className="flex items-center justify-center w-full">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="file-input file-input-bordered file-input-sm w-full bg-base-300/20"
+                  onChange={(e) => setAvatar(e.target.files[0])}
+                />
+            </div>
           </div>
 
           {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl py-3 font-medium text-white
-                       bg-gradient-to-r from-indigo-500 to-purple-500
-    text-white
-    shadow-md shadow-indigo-500/20
-    hover:shadow-lg hover:shadow-indigo-500/30
-    hover:scale-[1.02]
-    active:scale-[0.98]
-    transition-all duration-200
-                       disabled:opacity-60"
-          >
-            {loading ? (
-              <span className="loading loading-bars loading-md"></span>
-            ) : (
-              "Create Account"
-            )}
-          </button>
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-xl py-3.5 font-bold text-white
+                         bg-gradient-to-r from-indigo-500 to-purple-500
+                         shadow-lg shadow-indigo-500/20
+                         hover:scale-[1.01] active:scale-[0.98]
+                         transition-all duration-200 disabled:opacity-60"
+            >
+              {loading ? (
+                <span className="loading loading-bars loading-md"></span>
+              ) : (
+                "Create Account"
+              )}
+            </button>
+          </div>
         </form>
 
         {/* Footer */}
@@ -219,7 +204,7 @@ const Register = () => {
           Already have an account?{" "}
           <Link
             href="/login"
-            className="text-indigo-400 hover:text-indigo-300 transition"
+            className="text-indigo-400 font-medium hover:text-indigo-300 transition"
           >
             Log in
           </Link>

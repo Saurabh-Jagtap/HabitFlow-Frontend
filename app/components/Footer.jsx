@@ -4,12 +4,12 @@ import Link from "next/link"
 const Footer = () => {
     return (
         <footer className="mt-20 border-t border-white/10 bg-base-300/40 backdrop-blur">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 sm:py-10 py-8">
 
                 {/* Top section */}
                 <div className="flex flex-col sm:flex-row gap-8 sm:gap-0 sm:items-center sm:justify-between">
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 text-center sm:text-left">
                         {/* Brand name */}
                         <span className="text-lg font-semibold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
                             HabitFlow
@@ -24,12 +24,12 @@ const Footer = () => {
 
 
                     {/* Links */}
-                    <div className="flex flex-col gap-6 sm:gap-4">
-                        <div className="text-xs uppercase tracking-wide text-base-content/50">
+                    <div className="flex flex-col gap-5 sm:gap-4 justify-center sm:justify-start">
+                        <div className="text-xs sm:text-start text-center uppercase tracking-wide text-base-content/50">
                             App
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+                        <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-6 gap-y-3 text-sm">
                             <Link href="/dashboard" className="hover:text-indigo-400 transition">
                                 Dashboard
                             </Link>
@@ -44,11 +44,11 @@ const Footer = () => {
                         </div>
 
 
-                        <div className="text-xs uppercase tracking-wide text-base-content/50 mt-4">
+                        <div className="text-xs sm:text-start text-center uppercase tracking-wide text-base-content/50 mt-4">
                             Connect
                         </div>
 
-                        <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
+                        <div className="flex flex-wrap justify-center sm:justify-start gap-x-8 gap-y-3 text-sm">
                             <a
                                 href="https://github.com/Saurabh-Jagtap"
                                 target="_blank"

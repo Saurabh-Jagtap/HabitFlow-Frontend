@@ -12,7 +12,6 @@ import Link from "next/link";
 
 const HabitDetailPage = () => {
   const { id } = useParams();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const [habit, setHabit] = useState(null);
   const [habitLogs, setHabitLogs] = useState([]);
@@ -41,11 +40,11 @@ const HabitDetailPage = () => {
 
     const fetchHabit = async () => {
       try {
-        const habitRes = await api.get(`${apiUrl}/api/v1/habits/${id}`);
+        const habitRes = await api.get(`/api/v1/habits/${id}`);
         setHabit(habitRes.data.data);
 
         const logsRes = await api.get(
-          `${apiUrl}/api/v1/habits/${id}/logs`,
+          `/api/v1/habits/${id}/logs`,
           { withCredentials: true }
         );
 
@@ -105,7 +104,7 @@ const HabitDetailPage = () => {
     try {
       setCompletionLoading(true);
       await api.post(
-        `${apiUrl}/api/v1/habits/${id}/log`,
+        `/api/v1/habits/${id}/log`,
         { completed: !completedToday },
         { withCredentials: true }
       );

@@ -5,24 +5,25 @@ import { useRouter } from "next/navigation"
 import api from "../utils/axios.utils.js"
 import { House, LayoutDashboard, LogOut, Settings } from "lucide-react"
 import { useAuth } from "./AuthProvider.jsx"
+import toast from "react-hot-toast"
 
 const Navbar = () => {
   const { user, setUser, loading } = useAuth()
   const router = useRouter();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const avatarUrl = user?.avatar && user.avatar.trim() !== "" ? user.avatar : "/Profile_avatar_placeholder.png";
 
   const handleLogout = async () => {
+    const toastId = toast.loading("loading...")
     try {
       await api.post(
-        `${apiUrl}/api/v1/user/logout`,
+        `/api/v1/user/logout`,
         {}
       );
       setUser(null)
       router.push("/login");
     } catch (error) {
-      console.error("Logout failed", error);
+      toast.error("Logout failed", { id: toastId })
     }
   };
 
@@ -30,25 +31,21 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between">
-          {/* Brand */}
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-1 sm:gap-2 hover:opacity-90 transition"
-          >
-            {/* Brand text */}
-            <span className="hidden sm:inline text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+
+          {/* Brand Section */}
+          <Link href="/dashboard" className="flex items-center">
+            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent tracking-tight">
               HabitFlow
             </span>
           </Link>
-
 
           {/* Avatar dropdown */}
           <div className="dropdown dropdown-end">
             <label
               tabIndex={0}
-              className="cursor-pointer transition transform hover:scale-105"
+              className="cursor-pointer block p-1 rounded-full transition transform active:scale-95"
             >
-              <div className="relative h-11 w-11 sm:h-10 sm:w-10 rounded-full ring-2 ring-indigo-500 ring-offset-2 ring-offset-slate-900 overflow-hidden">
+              <div className="relative h-9 w-9 sm:h-10 sm:w-10 rounded-full ring-2 ring-indigo-500 ring-offset-2 ring-offset-slate-900 overflow-hidden">
                 {loading ? (
                   <div className="h-full w-full bg-slate-700 animate-pulse" />
                 ) : (
@@ -60,68 +57,57 @@ const Navbar = () => {
                   />
                 )}
               </div>
-
             </label>
 
+            {/* Dropdown Menu - Optimized for mobile width */}
             <ul
               tabIndex={0}
-              className="dropdown-content mt-3 w-52 rounded-xl bg-slate-900 shadow-xl border border-slate-700 p-3 sm:p-2 text-slate-200"
+              className="dropdown-content mt-3 w-56 rounded-xl bg-slate-900 shadow-2xl border border-slate-700 p-2 text-slate-200"
             >
-              {/* User Info */}
-              <li className="px-3 py-2">
-                <p className="font-semibold text-sm">{user?.username}</p>
+              <li className="px-4 py-3">
+                <p className="font-semibold text-sm truncate">{user?.username || 'User'}</p>
                 <p className="text-xs text-slate-400 truncate">
                   {user?.email}
                 </p>
               </li>
 
-              <div className="my-2 h-px bg-slate-700" />
+              <div className="my-1 h-px bg-slate-800" />
 
-              {/* Home */}
               <li>
-                <Link
-                  href="/"
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-800 transition"
-                >
-                  <House size={16} />
-                  Home
+                <Link href="/" className="flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg hover:bg-slate-800 transition">
+                  <House size={18} className="text-indigo-400" />
+                  <span className="text-sm">Home</span>
                 </Link>
               </li>
 
-              {/* Dashboard */}
               <li>
-                <Link
-                  href="/dashboard"
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-800 transition"
-                >
-                  <LayoutDashboard size={16} />
-                  Dashboard
+                <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg hover:bg-slate-800 transition">
+                  <LayoutDashboard size={18} className="text-indigo-400" />
+                  <span className="text-sm">Dashboard</span>
                 </Link>
               </li>
 
-                {/* Settings */}
               <li>
-                <Link
-                  href="/settings"
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-800 transition"
-                >
-                  <Settings size={16} />
-                  Settings
+                <Link href="/settings" className="flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg hover:bg-slate-800 transition">
+                  <Settings size={18} className="text-indigo-400" />
+                  <span className="text-sm">Settings</span>
                 </Link>
               </li>
 
-              {/* Logout */}
+              <div className="my-1 h-px bg-slate-800" />
+
               <li>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-lg text-rose-400 hover:bg-rose-500/10 transition"
+                  className="w-full flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg text-rose-400 hover:bg-rose-500/10 transition"
                 >
-                  <LogOut size={16} />
-                  Logout
+                  <LogOut size={18} />
+                  <span className="text-sm">Logout</span>
                 </button>
               </li>
             </ul>
           </div>
+
         </div>
       </div>
     </nav>
