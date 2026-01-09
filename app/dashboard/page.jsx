@@ -4,18 +4,30 @@ import api from "../utils/axios.utils.js";
 import Link from "next/link";
 import { RingCard } from "../components/RingCard.jsx";
 import { StreakBadge } from "../components/StreakBadge.jsx";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation.js";
+import { MoveRight, Sparkles } from "lucide-react";
 
 const Dashboard = () => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  const router = useRouter()
 
   const [habits, setHabits] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [highlightHabitId, setHighlightHabitId] = useState(null);
+
+  useEffect(() => {
+    const lastId = sessionStorage.getItem("lastCreatedHabitId");
+    if (lastId) {
+      setHighlightHabitId(lastId);
+      sessionStorage.removeItem("lastCreatedHabitId");
+    }
+  }, []);
 
   useEffect(() => {
     fetchHabits();
@@ -25,10 +37,10 @@ const Dashboard = () => {
   const fetchHabits = async () => {
     try {
       setLoading(true);
-      const res = await api.get(`${apiUrl}/api/v1/habits`);
+      const res = await api.get(`/api/v1/habits`);
       setHabits(res.data.data);
     } catch {
-      setError("Failed to load habits");
+      toast.error("Failed to create habit")
     } finally {
       setLoading(false);
     }
@@ -37,33 +49,51 @@ const Dashboard = () => {
   const fetchAnalytics = async () => {
     try {
       const res = await api.get(
-        `${apiUrl}/api/v1/analytics/dashboard`);
+        `/api/v1/analytics/dashboard`);
       setAnalytics(res.data.data);
     } catch {
-      console.error("Failed to load analytics");
+      toast.error("Failed to create habit")
     }
   };
 
   const handleCreateHabit = async (e) => {
     e.preventDefault();
+
+    const toastId = toast.loading("Creating habit...")
+
     try {
       setLoading(true);
-      await api.post(
-        `${apiUrl}/api/v1/habits`,
+      const res = await api.post(
+        `/api/v1/habits`,
         { title, description, category }
       );
 
-      setTitle("");
-      setDescription("");
-      setCategory("");
-      fetchHabits();
-      fetchAnalytics();
+      const habit = res.data.data._id
+      sessionStorage.setItem("lastCreatedHabitId", habit);
+
+      router.push(`/habits/${habit}`)
+
     } catch {
-      setError("Failed to create habit");
+      toast.error("Failed to create habit", { id: toastId })
     } finally {
       setLoading(false);
     }
   };
+
+  const handleDeleteHabit = async (habitId) => {
+    const confirm = window.confirm("Are you sure you want to delete this habit?");
+    if (!confirm) return;
+
+    try {
+      await api.delete(`/api/v1/habits/${habitId}`);
+      setHabits((prev) => prev.filter((h) => h._id !== habitId));
+      toast.success("Habit deleted");
+      fetchAnalytics();
+    } catch {
+      toast.error("Failed to delete habit");
+    }
+  };
+
 
   if (error) {
     return (
@@ -223,26 +253,71 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {habits.map((habit) => (
-                <Link
-                  key={habit._id}
-                  href={`/habits/${habit._id}`}
-                  className="group rounded-xl bg-base-100 p-5 border border-base-300
-                             hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                >
-                  <h3 className="text-lg font-semibold">{habit.title}</h3>
-                  <p className="text-sm text-base-content/70 mt-1">
-                    {habit.description || "No description"}
-                  </p>
-                  <span className="inline-block mt-3 text-xs px-3 py-1 rounded-full
-                                   bg-indigo-500/10 text-indigo-400">
-                    {habit.category || "General"}
-                  </span>
-                </Link>
-              ))}
+              {habits.map((habit) => {
+                const isNew = habit._id === highlightHabitId;
+
+                return (
+                  <div
+                    key={habit._id}
+                    className={`group relative rounded-xl bg-base-100 p-5 border cursor-pointer
+    transition-all duration-300 ease-out
+              ${isNew
+                        ? "border-indigo-500 shadow-lg shadow-indigo-500/30 ring-2 ring-indigo-500/30"
+                        : "border-base-300 hover:shadow-2xl hover:-translate-y-1.5 hover:border-indigo-500/50"
+                      }`}
+                  >
+                    {/* Three-dot menu */}
+                    <div className="absolute top-3 right-3 dropdown dropdown-end">
+                      <label tabIndex={0} className="btn btn-ghost btn-sm btn-circle">
+                        ⋮
+                      </label>
+                      <ul
+                        tabIndex={0}
+                        className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
+                      >
+                        <li>
+                          <button
+                            onClick={() => handleDeleteHabit(habit._id)}
+                            className="text-error"
+                          >
+                            Delete Habit
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Clickable content */}
+                    <Link href={`/habits/${habit._id}`} className="block">
+                      <h3 className="text-lg font-semibold">{habit.title}</h3>
+
+                      <p className="text-sm text-base-content/70 mt-1">
+                        {habit.description || "No description"}
+                      </p>
+
+                      <span className="inline-block mt-3 text-xs px-3 py-1 rounded-full
+                bg-indigo-500/10 text-indigo-400">
+                        {habit.category || "General"}
+                      </span>
+
+                      {isNew && (
+                        <div className="mt-3 flex items-center gap-1 text-xs font-medium text-indigo-400">
+                          <span>Newly created</span>
+                          <Sparkles size={14} /> 
+                        </div>
+                      )}
+
+                      <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition text-indigo-400">
+                        <MoveRight />
+                      </div>
+
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>
+
       </div>
     </main>
   );
