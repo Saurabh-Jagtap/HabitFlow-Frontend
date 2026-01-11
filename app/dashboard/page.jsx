@@ -2,24 +2,47 @@
 import React, { useEffect, useState } from "react";
 import api from "../utils/axios.utils.js";
 import Link from "next/link";
-import { RingCard } from "../components/RingCard.jsx";
-import { StreakBadge } from "../components/StreakBadge.jsx";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation.js";
-import { MoveRight, Sparkles } from "lucide-react";
+import { ProgressBar } from "../components/ProgressBar.jsx";
+import { SemiCircleGauge } from "../components/Speedometer.jsx";
+import {
+  MoveRight,
+  Sparkles,
+  Plus,
+  LayoutDashboard,
+  Trash2,
+  MoreVertical,
+  Activity,
+  Calendar,
+  Trophy,
+  Target,
+  Flame,
+  CheckCircle2,
+  BarChart3,
+} from "lucide-react";
 
 const Dashboard = () => {
-
-  const router = useRouter()
+  const router = useRouter();
 
   const [habits, setHabits] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // Form States
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  
   const [highlightHabitId, setHighlightHabitId] = useState(null);
+
+  // Date info
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
 
   useEffect(() => {
     const lastId = sessionStorage.getItem("lastCreatedHabitId");
@@ -40,7 +63,7 @@ const Dashboard = () => {
       const res = await api.get(`/api/v1/habits`);
       setHabits(res.data.data);
     } catch {
-      toast.error("Failed to create habit")
+      toast.error("Failed to load habits");
     } finally {
       setLoading(false);
     }
@@ -48,33 +71,31 @@ const Dashboard = () => {
 
   const fetchAnalytics = async () => {
     try {
-      const res = await api.get(
-        `/api/v1/analytics/dashboard`);
+      const res = await api.get(`/api/v1/analytics/dashboard`);
       setAnalytics(res.data.data);
     } catch {
-      toast.error("Failed to create habit")
+      console.error("Failed to load analytics");
     }
   };
 
   const handleCreateHabit = async (e) => {
     e.preventDefault();
-
-    const toastId = toast.loading("Creating habit...")
+    const toastId = toast.loading("Creating habit...");
 
     try {
       setLoading(true);
-      const res = await api.post(
-        `/api/v1/habits`,
-        { title, description, category }
-      );
+      const res = await api.post(`/api/v1/habits`, { title, description, category });
+      const habit = res.data.data._id;
+      
+      // Clear form
+      setTitle("");
+      setDescription("");
+      setCategory("");
 
-      const habit = res.data.data._id
       sessionStorage.setItem("lastCreatedHabitId", habit);
-
-      router.push(`/habits/${habit}`)
-
+      router.push(`/habits/${habit}`);
     } catch {
-      toast.error("Failed to create habit", { id: toastId })
+      toast.error("Failed to create habit", { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -94,222 +115,265 @@ const Dashboard = () => {
     }
   };
 
-
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="alert alert-error">{error}</div>
+      <div className="min-h-screen flex items-center justify-center bg-base-200">
+        <div className="alert alert-error max-w-md">{error}</div>
       </div>
     );
   }
 
   return (
-    <main className="relative min-h-screen bg-base-200 px-4 py-10 overflow-hidden animate-fade-in-up">
-
-      {/* Background Glow */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/4 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl" />
+    <main className="relative min-h-screen bg-base-200 overflow-x-hidden pb-20 selection:bg-indigo-500/30">
+      
+      {/* Background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -left-[10%] h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-[120px]" />
+        <div className="absolute top-[40%] -right-[10%] h-[400px] w-[400px] rounded-full bg-purple-500/10 blur-[120px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto space-y-12">
-
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
-          <p className="text-base-content/60">
-            Track your habits and stay consistent
-          </p>
-        </div>
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in-up">
+          <div>
+            <div className="flex items-center gap-2 text-indigo-500 font-medium text-sm uppercase tracking-wider mb-1">
+              <Calendar size={14} />
+              <span>{today}</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-base-content">
+              Dashboard
+            </h1>
+          </div>
+        </header>
 
-        {/* DashBoard Analytics */}
+        {/* ANALYTICS */}
         {analytics && (
-          <section className="space-y-6">
+          <section className="animate-fade-in-up delay-100">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              
+              {/* Card 1: Main Progress (The Speedometer) */}
+              <div className="md:col-span-1 bg-base-100/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-sm relative overflow-hidden flex flex-col items-center justify-between min-h-[220px]">
+                 <div className="w-full flex items-center justify-between mb-2">
+                    <h3 className="font-semibold text-base-content/80 flex items-center gap-2">
+                       <Activity size={18} className="text-indigo-500"/> Daily Goal
+                    </h3>
+                 </div>
+                 
+                 <SemiCircleGauge 
+                    value={analytics.CompletedTodayHabits} 
+                    total={analytics.TotalHabits} 
+                 />
 
-            <h2 className="text-xl font-semibold tracking-tight">
-              Overview
-            </h2>
+                 <div className="text-center mt-[-10px]">
+                    <p className="text-sm text-base-content/60">
+                       You've completed <span className="text-base-content font-bold">{analytics.CompletedTodayHabits}</span> out of <span className="text-base-content font-bold">{analytics.TotalHabits}</span> habits
+                    </p>
+                 </div>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Middle Column */}
+              <div className="md:col-span-1 flex flex-col gap-4">
+                 
+                 {/* Card 2: Streak (Fire) */}
+                 <div className="flex-1 bg-gradient-to-br from-orange-500/10 to-red-500/5 border border-orange-500/20 p-5 rounded-3xl flex items-center justify-between relative overflow-hidden group">
+                    <div className="absolute -right-6 -bottom-6 text-orange-500/10 group-hover:text-orange-500/20 transition-all duration-500">
+                       <Flame size={120} />
+                    </div>
+                    <div>
+                       <p className="text-base-content/60 text-sm font-medium mb-1 flex items-center gap-1">
+                          <Flame size={14} className="text-orange-500" /> Best Streak
+                       </p>
+                       <h4 className="text-4xl font-bold text-base-content">
+                          {analytics.BestStreak} <span className="text-lg font-normal text-base-content/50">days</span>
+                       </h4>
+                    </div>
+                 </div>
 
-              {/* Avg Completion */}
-              <RingCard
-                label="Avg Completion"
-                value={analytics.AvgCompletionRate}
-                color="indigo"
-                suffix="%"
-              />
+                 {/* Card 3: Total Habits */}
+                 <div className="flex-1 bg-base-100/60 backdrop-blur-xl border border-white/10 p-5 rounded-3xl flex items-center justify-between">
+                    <div>
+                       <p className="text-base-content/60 text-sm font-medium mb-1 flex items-center gap-1">
+                          <Target size={14} className="text-blue-500" /> Total Active
+                       </p>
+                       <h4 className="text-3xl font-bold text-base-content">
+                          {analytics.TotalHabits}
+                       </h4>
+                    </div>
+                    <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                       <LayoutDashboard size={24} />
+                    </div>
+                 </div>
+              </div>
 
-              {/* Completed Today */}
-              <RingCard
-                label="Completed Today"
-                value={
-                  analytics.TotalHabits === 0
-                    ? 0
-                    : Math.round(
-                      (analytics.CompletedTodayHabits / analytics.TotalHabits) * 100
-                    )
-                }
-                color="emerald"
-                suffix="%"
-                subText={`${analytics.CompletedTodayHabits} / ${analytics.TotalHabits}`}
-              />
+              {/* Right Column: Detailed Metrics */}
+              <div className="md:col-span-1 bg-base-100/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl flex flex-col justify-center gap-6">
+                 <h3 className="font-semibold text-base-content/80 flex items-center gap-2">
+                    <BarChart3 size={18} className="text-purple-500"/> Efficiency
+                 </h3>
+                 
+                 <div className="space-y-6">
+                    <ProgressBar 
+                       label="Avg. Completion" 
+                       value={analytics.AvgCompletionRate} 
+                       colorClass="bg-gradient-to-r from-indigo-500 to-purple-500"
+                       icon={Trophy}
+                    />
+                    
+                    <ProgressBar 
+                       label="Weekly Goal" 
+                       value={Math.round(analytics.AvgCompletionRate * 0.9)} 
+                       colorClass="bg-gradient-to-r from-emerald-500 to-teal-500"
+                       icon={CheckCircle2}
+                    />
+                 </div>
 
-              {/* Total Habits (static ring) */}
-              <RingCard
-                label="Total Habits"
-                value={100}
-                color="slate"
-                displayValue={analytics.TotalHabits}
-              />
-
-              {/* Best Streak Badge */}
-              <StreakBadge value={analytics.BestStreak} />
+                 <div className="pt-4 border-t border-base-200 text-xs text-base-content/50 text-center">
+                    Consistency is key. Keep it up!
+                 </div>
+              </div>
 
             </div>
           </section>
         )}
 
-        {/* Create Habit */}
-        <section className="rounded-2xl bg-base-100 border border-base-300 shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Create a new habit</h2>
+        {/* Create Habit Section */}
+        <section className="animate-fade-in-up delay-200">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-base-100 to-base-200/50 border border-white/10 shadow-lg p-6 md:p-8">
+            <div className="flex items-center gap-2 mb-6">
+               <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-500">
+                  <Plus size={20} />
+               </div>
+               <h2 className="text-xl font-semibold">Create a new habit</h2>
+            </div>
 
-          <form
-            onSubmit={handleCreateHabit}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4"
-          >
-            <input
-              type="text"
-              placeholder="Title"
-              className="input input-bordered rounded-lg px-4 py-2
-    bg-base-300/60
-    border border-base-300
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500/40
-    focus:border-indigo-500/60
-    transition"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-
-            <input
-              type="text"
-              placeholder="Description"
-              className="input input-bordered rounded-lg px-4 py-2
-    bg-base-300/60
-    border border-base-300
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500/40
-    focus:border-indigo-500/60
-    transition"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-
-            <input
-              type="text"
-              placeholder="Category"
-              className="input input-bordered rounded-lg px-4 py-2
-    bg-base-300/60
-    border border-base-300
-    focus:outline-none
-    focus:ring-2 focus:ring-indigo-500/40
-    focus:border-indigo-500/60
-    transition"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
-
-            <div className="md:col-span-3 ">
+            <form onSubmit={handleCreateHabit} className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 space-y-4 md:space-y-0 md:flex md:gap-4">
+                <input
+                  type="text"
+                  placeholder="Habit Title (e.g., Read 30 mins)"
+                  className="input input-md w-full bg-base-100/50 border-base-300 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Category (e.g., Health)"
+                  className="input input-md w-full md:w-1/3 bg-base-100/50 border-base-300 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+              </div>
+              
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center justify-center rounded-xl px-6 py-3 font-medium text-white
-                           bg-gradient-to-r from-indigo-500 to-purple-500
-    shadow-md shadow-indigo-500/20
-    hover:shadow-lg hover:shadow-indigo-500/30
-    hover:scale-[1.02]
-    active:scale-[0.98]
-    transition-all duration-200"
+                className="btn btn-md bg-indigo-600 hover:bg-indigo-700 text-white border-none rounded-xl shadow-lg shadow-indigo-500/30 w-full md:w-auto min-w-[140px]"
               >
-                {loading ? (
-                  <span className="loading loading-bars loading-sm"></span>
-                ) : (
-                  "Create Habit"
-                )}
+                {loading ? <span className="loading loading-dots loading-sm"></span> : "Add Habit"}
               </button>
+            </form>
+            
+            {/* Optional Description Field */}
+            <div className="mt-4">
+               <input
+                  type="text"
+                  placeholder="Description (Optional motivation...)"
+                  className="input input-sm w-full bg-transparent border-b border-base-300 focus:border-indigo-500 border-t-0 border-x-0 rounded-none px-1 focus:outline-none transition-all placeholder:text-base-content/40"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+               />
             </div>
-          </form>
+          </div>
         </section>
 
-        {/* Habits List */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Your Habits</h2>
+        {/* Habits List Section */}
+        <section className="animate-fade-in-up delay-300">
+           <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2 text-lg font-semibold text-base-content/80">
+                <LayoutDashboard className="text-indigo-500" size={20} />
+                <h2>Your Habits</h2>
+              </div>
+              <span className="text-sm text-base-content/50">{habits.length} Active</span>
+           </div>
 
           {habits.length === 0 ? (
-            <div className="rounded-xl bg-base-100 p-6 border border-base-300">
-              No habits yet. Create your first habit to get started.
+            <div className="rounded-2xl bg-base-100/50 border border-dashed border-base-300 p-12 text-center">
+              <div className="mx-auto w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mb-4 text-base-content/40">
+                <Sparkles size={24} />
+              </div>
+              <h3 className="text-lg font-medium">No habits yet</h3>
+              <p className="text-base-content/60">Start your journey by creating your first habit above.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {habits.map((habit) => {
                 const isNew = habit._id === highlightHabitId;
 
                 return (
                   <div
                     key={habit._id}
-                    className={`group relative rounded-xl bg-base-100 p-5 border cursor-pointer
-    transition-all duration-300 ease-out
-              ${isNew
-                        ? "border-indigo-500 shadow-lg shadow-indigo-500/30 ring-2 ring-indigo-500/30"
-                        : "border-base-300 hover:shadow-2xl hover:-translate-y-1.5 hover:border-indigo-500/50"
-                      }`}
+                    className={`group relative rounded-2xl bg-base-100 p-5 border transition-all duration-300 ease-out hover:-translate-y-1
+                    ${isNew 
+                      ? "border-indigo-500 shadow-xl shadow-indigo-500/20 ring-1 ring-indigo-500/50" 
+                      : "border-base-200 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/10"
+                    }`}
                   >
-                    {/* Three-dot menu */}
-                    <div className="absolute top-3 right-3 dropdown dropdown-end">
-                      <label tabIndex={0} className="btn btn-ghost btn-sm btn-circle">
-                        ⋮
-                      </label>
-                      <ul
-                        tabIndex={0}
-                        className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
-                      >
-                        <li>
-                          <button
-                            onClick={() => handleDeleteHabit(habit._id)}
-                            className="text-error"
-                          >
-                            Delete Habit
-                          </button>
-                        </li>
-                      </ul>
+                    {/* Action Menu - Positioned relatively to be clickable without triggering Link */}
+                    <div className="absolute top-4 right-4 z-20">
+                      <div className="dropdown dropdown-end dropdown-bottom dropdown-hover">
+                        <div 
+                          tabIndex={0} 
+                          role="button" 
+                          onClick={(e) => e.preventDefault()} // Prevent navigation when clicking menu
+                          className="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content hover:bg-base-200"
+                        >
+                          <MoreVertical size={16} />
+                        </div>
+                        <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-xl w-40 border border-base-200">
+                          <li>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault(); // Stop Link propagation
+                                handleDeleteHabit(habit._id);
+                              }}
+                              className="text-error hover:bg-error/10 flex items-center gap-2"
+                            >
+                              <Trash2 size={14} /> Delete
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
 
-                    {/* Clickable content */}
-                    <Link href={`/habits/${habit._id}`} className="block">
-                      <h3 className="text-lg font-semibold">{habit.title}</h3>
-
-                      <p className="text-sm text-base-content/70 mt-1">
-                        {habit.description || "No description"}
-                      </p>
-
-                      <span className="inline-block mt-3 text-xs px-3 py-1 rounded-full
-                bg-indigo-500/10 text-indigo-400">
-                        {habit.category || "General"}
-                      </span>
-
-                      {isNew && (
-                        <div className="mt-3 flex items-center gap-1 text-xs font-medium text-indigo-400">
-                          <span>Newly created</span>
-                          <Sparkles size={14} /> 
+                    <Link href={`/habits/${habit._id}`} className="block h-full">
+                      <div className="flex flex-col h-full">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-base-content group-hover:text-indigo-600 transition-colors pr-8">
+                            {habit.title}
+                          </h3>
+                          
+                          <p className="text-sm text-base-content/60 mt-1 line-clamp-2 min-h-[2.5rem]">
+                            {habit.description || "Build consistency with this habit."}
+                          </p>
                         </div>
-                      )}
 
-                      <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition text-indigo-400">
-                        <MoveRight />
+                        <div className="mt-4 pt-4 border-t border-base-200 flex items-center justify-between">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+                            {habit.category || "General"}
+                          </span>
+
+                          <div className="flex items-center gap-2">
+                             {isNew && (
+                                <span className="flex items-center gap-1 text-xs font-medium text-amber-500">
+                                  <Sparkles size={12} /> New
+                                </span>
+                             )}
+                             <MoveRight size={16} className="text-base-content/30 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
+                          </div>
+                        </div>
                       </div>
-
                     </Link>
                   </div>
                 );
@@ -323,4 +387,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard
