@@ -40,7 +40,7 @@ export default function Login() {
 
   return (
 
-    <main className="relative flex-1 flex justify-center items-center bg-base-200 overflow-hidden px-4 py-12 sm:px-6">
+    <main className="relative flex-1 flex justify-center items-center bg-base-200 overflow-hidden px-4 py-18 sm:px-6">
       
       {/* Background glow */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
@@ -126,14 +126,11 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl py-3 font-medium
-                      bg-gradient-to-r from-indigo-500 to-purple-500
-                      text-white
-                      shadow-md shadow-indigo-500/20
-                      hover:shadow-lg hover:shadow-indigo-500/30
-                      hover:scale-[1.02]
-                      active:scale-[0.98]
-                      transition-all duration-200"
+            className="w-full rounded-xl py-3 font-medium text-white
+                      bg-gradient-to-r from-indigo-600 to-purple-600
+                               shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40
+                               hover:scale-[1.02] active:scale-[0.98]
+                               transition-all duration-300 duration-200"
           >
             {loading ? (
               <span className="loading loading-bars loading-md"></span>

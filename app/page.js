@@ -4,7 +4,7 @@ import { CheckCircle2, Flame, BarChart3 } from "lucide-react";
 
 export default function Home() {
   return (
-    <main className="relative flex-1 flex flex-col items-center justify-center bg-base-200 overflow-hidden px-4 sm:px-6 py-10 sm:py-20">
+    <main className="relative flex-1 flex flex-col items-center justify-center bg-base-200 overflow-hidden px-4 sm:px-6 py-10 sm:py-12">
       
       {/* Background Glow */}
       <div className="absolute inset-0 -z-10 pointer-events-none">

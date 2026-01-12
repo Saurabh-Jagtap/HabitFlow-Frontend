@@ -141,8 +141,10 @@ export default function Security() {
               <button
                 type="submit"
                 className="mt-4 px-6 py-2 rounded-lg font-medium text-white
-                bg-gradient-to-r from-indigo-500 to-purple-500
-                hover:scale-[1.02] active:scale-[0.98] transition"
+                bg-gradient-to-r from-indigo-600 to-purple-600
+                               shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40
+                               hover:scale-[1.02] active:scale-[0.98]
+                               transition-all duration-300"
               >
                 Update Password
               </button>
