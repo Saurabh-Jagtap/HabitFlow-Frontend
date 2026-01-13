@@ -6,7 +6,9 @@ export function middleware(request) {
   const isPublicRoute =
     pathname === '/' ||
     pathname.startsWith('/login') ||
-    pathname.startsWith('/register');
+    pathname.startsWith('/register') ||
+    pathname.startsWith("/forgotPassword") ||
+    pathname.startsWith('/resetPassword');
 
   if (isPublicRoute) {
     return NextResponse.next();

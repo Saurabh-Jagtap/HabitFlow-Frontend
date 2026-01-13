@@ -1,6 +1,7 @@
 "use client"
 import { createContext, useContext, useEffect, useState, useCallback } from "react"
 import api from "../utils/axios.utils.js";
+import LoadingSpinner from "./LoadingSpinner.jsx";
 
 const AuthContext = createContext(null);
 
@@ -24,6 +25,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+
+  if (loading) {
+    return <LoadingSpinner fullScreen={true} message="Initializing HabitFlow..." />;
+  }
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, fetchUser }}>

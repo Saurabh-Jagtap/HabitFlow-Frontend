@@ -24,8 +24,6 @@ const Register = () => {
     setError("");
     setLoading(true);
 
-    const toastId = toast.loading("Creating account...")
-
     try {
       const formData = new FormData();
       formData.append("fullname", fullname);
@@ -41,10 +39,10 @@ const Register = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      toast.success("Account created successfully!", { id: toastId })
+      toast.success("Account created successfully!")
       router.push("/login");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Registration failed", { id: toastId })
+      toast.error(err.response?.data?.message || "Registration failed")
     } finally {
       setLoading(false);
     }
@@ -191,7 +189,7 @@ const Register = () => {
                                transition-all duration-300 disabled:opacity-60"
             >
               {loading ? (
-                <span className="loading loading-bars loading-md"></span>
+                <span className="loading loading-spinner loading-sm"></span>
               ) : (
                 "Create Account"
               )}

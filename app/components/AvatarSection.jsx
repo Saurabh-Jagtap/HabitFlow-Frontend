@@ -3,6 +3,7 @@ import { useState } from "react"
 import api from "../utils/axios.utils.js";
 import { useAuth } from "./AuthProvider"
 import toast from "react-hot-toast";
+import LoadingSpinner from "./LoadingSpinner.jsx";
 
 export default function AvatarSection() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -90,7 +91,7 @@ export default function AvatarSection() {
             onClick={handleUpload}
             disabled={uploading}
           >
-            {uploading ? "Uploading..." : "Save avatar"}
+            {uploading ? <span className="loading loading-spinner loading-sm"></span> : "Save avatar"}
           </button>
         )}
 

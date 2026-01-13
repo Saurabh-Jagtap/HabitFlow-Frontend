@@ -25,9 +25,13 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    const publicRoutes = ["/login", "/register", "/"];
+    const publicRoutes = ["/login", "/register", "/", "/forgotPassword", "/resetPassword"];
 
-    if (publicRoutes.includes(window.location.pathname)) {
+    const isPublicPage = publicRoutes.some(route =>
+      window.location.pathname.startsWith(route)
+    );
+
+    if (isPublicPage) {
       return Promise.reject(error);
     }
 

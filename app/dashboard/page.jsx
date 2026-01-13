@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation.js";
 import { ProgressBar } from "../components/ProgressBar.jsx";
 import { SemiCircleGauge } from "../components/Speedometer.jsx";
+import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import {
   MoveRight,
   Sparkles,
@@ -80,7 +81,6 @@ const Dashboard = () => {
 
   const handleCreateHabit = async (e) => {
     e.preventDefault();
-    const toastId = toast.loading("Creating habit...");
 
     try {
       setLoading(true);
@@ -95,7 +95,7 @@ const Dashboard = () => {
       sessionStorage.setItem("lastCreatedHabitId", habit);
       router.push(`/habits/${habit}`);
     } catch {
-      toast.error("Failed to create habit", { id: toastId });
+      toast.error("Failed to create habit");
     } finally {
       setLoading(false);
     }
@@ -271,7 +271,7 @@ const Dashboard = () => {
                 disabled={loading}
                 className="btn btn-md bg-indigo-600 hover:bg-indigo-700 text-white border-none rounded-xl shadow-lg shadow-indigo-500/30 w-full md:w-auto min-w-[140px]"
               >
-                {loading ? <span className="loading loading-dots loading-sm"></span> : "Add Habit"}
+                {loading ? <span className="loading loading-spinner loading-sm"></span> : "Add Habit"}
               </button>
             </form>
             

@@ -23,16 +23,13 @@ export default function Login() {
     setError("");
     setLoading(true);
 
-    const toastId = toast.loading("Logging in...");
     try {
       await api.post(`/api/v1/user/login`, { email, password });
       await fetchUser();
-      toast.success("Welcome back!", { id: toastId });
+      toast.success("Welcome back!");
       router.push("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed", {
-        id: toastId,
-      });
+      toast.error(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -41,7 +38,7 @@ export default function Login() {
   return (
 
     <main className="relative flex-1 flex justify-center items-center bg-base-200 overflow-hidden px-4 py-18 sm:px-6">
-      
+
       {/* Background glow */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
         <div className="absolute top-1/4 -left-10 sm:left-1/4 h-56 w-56 sm:h-72 sm:w-72 rounded-full bg-indigo-500/20 blur-3xl opacity-50 sm:opacity-100"></div>
@@ -50,7 +47,7 @@ export default function Login() {
 
       {/* Card */}
       <div className="w-full max-w-md rounded-2xl bg-base-100 border border-base-300 shadow-xl p-6 sm:p-8 space-y-6 animate-fade-in-up">
-        
+
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-2xl sm:text-3xl font-semibold">Welcome back</h1>
@@ -67,31 +64,33 @@ export default function Login() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6"> {/* Increased spacing slightly */}
+
+          {/* Email Input */}
           <div>
             <label className="label">
-              <span className="label-text mb-1">Email</span>
+              <span className="label-text mb-1 font-medium">Email</span>
             </label>
             <input
               type="email"
               placeholder="Email"
               className="input input-bordered w-full py-3 rounded-lg px-4
-                        bg-base-300/60
-                        border border-base-300
-                        focus:outline-none
-                        focus:ring-2 focus:ring-indigo-500/40
-                        focus:border-indigo-500/60
-                        transition"
+                 bg-base-300/60
+                 border border-base-300
+                 focus:outline-none
+                 focus:ring-2 focus:ring-indigo-500/40
+                 focus:border-indigo-500/60
+                 transition"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          {/* Password */}
+          {/* Password Input Group */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text mb-1">Password</span>
+              <span className="label-text mb-1 font-medium">Password</span>
             </label>
 
             <div className="relative">
@@ -101,39 +100,50 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 className="input input-bordered w-full py-3 pr-12
-                          rounded-lg px-4
-                          bg-base-300/60
-                          border border-base-300
-                          focus:outline-none
-                          focus:ring-2 focus:ring-indigo-500/40
-                          focus:border-indigo-500/60
-                          transition"
+                   rounded-lg px-4
+                   bg-base-300/60
+                   border border-base-300
+                   focus:outline-none
+                   focus:ring-2 focus:ring-indigo-500/40
+                   focus:border-indigo-500/60
+                   transition"
                 required
               />
 
+              {/* Eye Icon Toggle */}
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute inset-y-0 right-3 flex items-center
-                          text-base-content/60 hover:text-base-content
-                          transition"
+                   text-base-content/60 hover:text-base-content
+                   transition cursor-pointer"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+
+            <div className="flex justify-end mt-2">
+              <Link
+                href="/forgotPassword"
+                className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
             className="w-full rounded-xl py-3 font-medium text-white
-                      bg-gradient-to-r from-indigo-600 to-purple-600
-                               shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40
-                               hover:scale-[1.02] active:scale-[0.98]
-                               transition-all duration-300 duration-200"
+               bg-gradient-to-r from-indigo-600 to-purple-600
+               shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40
+               hover:scale-[1.02] active:scale-[0.98]
+               transition-all duration-200"
           >
             {loading ? (
-              <span className="loading loading-bars loading-md"></span>
+              <span className="loading loading-spinner loading-sm"></span>
             ) : (
               "Log In"
             )}
