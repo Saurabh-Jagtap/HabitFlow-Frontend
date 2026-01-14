@@ -25,14 +25,16 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    const publicRoutes = ["/login", "/register", "/", "/forgotPassword", "/resetPassword"];
-
-    const isPublicPage = publicRoutes.some(route =>
-      window.location.pathname.startsWith(route)
-    );
-
-    if (isPublicPage) {
-      return Promise.reject(error);
+    if (typeof window !== "undefined") {
+        const publicRoutes = ["/login", "/register", "/", "/forgotPassword", "/resetPassword"];
+        const isPublicPage = publicRoutes.some(route =>
+          window.location.pathname.startsWith(route)
+        );
+        
+        // If we are on a public page, don't try to refresh token (avoids loops)
+        if (isPublicPage) {
+            return Promise.reject(error);
+        }
     }
 
     // If not 401 -> reject
@@ -72,9 +74,9 @@ api.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError);
 
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
+      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+            window.location.href = "/login";
+        }
 
       return Promise.reject(refreshError);
     } finally {

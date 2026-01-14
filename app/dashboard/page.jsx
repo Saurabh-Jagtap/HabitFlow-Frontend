@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation.js";
 import { ProgressBar } from "../components/ProgressBar.jsx";
 import { SemiCircleGauge } from "../components/Speedometer.jsx";
-import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import {
   MoveRight,
   Sparkles,
@@ -25,6 +24,7 @@ import {
 
 const Dashboard = () => {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
 
   const [habits, setHabits] = useState([]);
   const [analytics, setAnalytics] = useState(null);
@@ -42,6 +42,13 @@ const Dashboard = () => {
     month: "long",
     day: "numeric",
   });
+
+  useEffect(() => {
+    // If we are done loading and no user is found, Go to Login
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   useEffect(() => {
     const lastId = sessionStorage.getItem("lastCreatedHabitId");
@@ -111,6 +118,12 @@ const Dashboard = () => {
       toast.error("Failed to delete habit");
     }
   };
+
+  if (authLoading) {
+     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!user) return null; 
 
   if (error) {
     return (
