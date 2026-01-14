@@ -21,6 +21,7 @@ import {
   CheckCircle2,
   BarChart3,
 } from "lucide-react";
+import { useAuth } from "../components/AuthProvider.jsx";
 
 const Dashboard = () => {
   const router = useRouter();
