@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import api from "../utils/axios.utils";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -28,13 +28,13 @@ const ForgotPassword = () => {
       toast.success("Reset link sent!", { id: toastId });
       setSubmitted(true);
 
-      // Trigger standard 60s UI cooldown
+      // Trigger 60s UI cooldown
       startCooldown(60);
 
     } catch (error) {
       const message = error.response?.data?.message || "Something went wrong";
 
-      // Trigger 1 Hour (3600s) cooldown if Rate Limited
+      // Trigger 1 Hour cooldown if Rate Limited
       if (error.response?.status === 429) {
         toast.error("Limit reached. Please wait an hour.", { id: toastId, icon: "🛑" });
         startCooldown(3600);

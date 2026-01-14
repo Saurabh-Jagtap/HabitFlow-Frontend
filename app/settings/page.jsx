@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../components/AuthProvider";
 import api from "../utils/axios.utils";
 import AvatarSection from "../components/AvatarSection";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { 
   ArrowLeft, 
@@ -16,7 +15,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import Link from "next/link";
-import LoadingSpinner from "../components/LoadingSpinner"; // Assuming you have this from previous steps
+import LoadingSpinner from "../components/LoadingSpinner"; 
 
 export default function Settings() {
   const { user, loading, setUser } = useAuth();
@@ -31,7 +30,6 @@ export default function Settings() {
 
   const [savingProfile, setSavingProfile] = useState(false);
 
-  // INIT FORM DATA
   useEffect(() => {
     if (user && !hasInitialized.current) {
       setProfileData({
@@ -48,7 +46,7 @@ export default function Settings() {
     e.preventDefault();
     setSavingProfile(true);
     
-    // Validations could go here
+    // Validations 
     if(!profileData.fullname && !profileData.username) {
         toast.error("No fields provided for update");
         setSavingProfile(false);
@@ -108,7 +106,7 @@ export default function Settings() {
 
         <div className="grid gap-8">
           
-          {/* --- SECTION 1: PUBLIC PROFILE --- */}
+          {/* SECTION 1: PUBLIC PROFILE */}
           <section className="card bg-base-100/50 backdrop-blur-xl border border-base-300 shadow-xl overflow-hidden">
              {/* Decorative Top Line */}
             <div className="h-1 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 opacity-50" />
@@ -170,7 +168,7 @@ export default function Settings() {
                       </div>
                     </div>
 
-                    {/* Email (Full Width & Disabled) */}
+                    {/* Email */}
                     <div className="form-control gap-2 md:col-span-2">
                       <label className="text-sm font-medium text-base-content/70 ml-1 flex items-center justify-between">
                         <span>Email Address</span>
@@ -217,7 +215,7 @@ export default function Settings() {
             </div>
           </section>
 
-          {/* --- SECTION 2: SECURITY CARD --- */}
+          {/* SECTION 2: SECURITY CARD */}
           <section className="card bg-base-100/50 backdrop-blur-xl border border-base-300 shadow-xl overflow-hidden hover:border-indigo-500/30 transition-colors group">
             <Link href="/security" className="block w-full text-left">
                 <div className="card-body p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">

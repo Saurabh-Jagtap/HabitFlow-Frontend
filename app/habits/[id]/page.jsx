@@ -49,7 +49,6 @@ const HabitDetailPage = () => {
       const logs = logsRes.data.data.logs;
       setHabitLogs(logs);
 
-      // Check completion status
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
@@ -61,7 +60,6 @@ const HabitDetailPage = () => {
 
       setCompletedToday(Boolean(todayLog?.completed));
 
-      // Calculate stats
       setCurrentStreak(calculateCurrentStreak(logs));
       setLongestStreak(calculateLongestStreak(logs));
 
@@ -70,7 +68,6 @@ const HabitDetailPage = () => {
 
       setCompletionRate(total ? completedCount / total : 0);
 
-      // Set for calendar lookup
       const completedSet = new Set(
         logs
           .filter(l => l.completed)
@@ -155,7 +152,7 @@ const HabitDetailPage = () => {
         {/* LEFT COLUMN: Hero & Stats */}
         <div className="lg:col-span-8 space-y-8">
             
-            {/* 1. Hero Card */}
+            {/* Hero Card */}
             <section className="relative overflow-hidden rounded-3xl bg-slate-800/40 backdrop-blur-xl border border-white/5 p-8 sm:p-10">
                 {/* Decoration */}
                 <div className="absolute top-0 right-0 p-32 bg-indigo-500/10 blur-[80px] rounded-full pointer-events-none" />
@@ -222,7 +219,7 @@ const HabitDetailPage = () => {
                 </div>
             </section>
 
-            {/* 2. Stats Grid */}
+            {/* Stats Grid */}
             <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <StatCard 
                     icon={Flame} 
@@ -331,7 +328,6 @@ const HabitDetailPage = () => {
   );
 };
 
-// Reusable Stat Component
 const StatCard = ({ icon: Icon, label, value, suffix, color, bg }) => (
     <div className="bg-slate-800/40 border border-white/5 rounded-2xl p-5 hover:bg-slate-800/60 transition-colors duration-300">
         <div className="flex items-start justify-between mb-2">

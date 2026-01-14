@@ -12,8 +12,7 @@ const LoadingSpinner = ({ fullScreen = true, size = "lg", message = "Loading..."
       {/* The Spinner */}
       <div className="relative">
         <div className={`loading loading-spinner text-indigo-500 ${sizeClasses[size]}`}></div>
-        
-        {/* Optional: Add a subtle pulse behind it for extra polish */}
+
         <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full animate-pulse -z-10"></div>
       </div>
 

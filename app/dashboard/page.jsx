@@ -31,14 +31,12 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Form States
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   
   const [highlightHabitId, setHighlightHabitId] = useState(null);
 
-  // Date info
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -86,8 +84,7 @@ const Dashboard = () => {
       setLoading(true);
       const res = await api.post(`/api/v1/habits`, { title, description, category });
       const habit = res.data.data._id;
-      
-      // Clear form
+
       setTitle("");
       setDescription("");
       setCategory("");
@@ -152,7 +149,7 @@ const Dashboard = () => {
           <section className="animate-fade-in-up delay-100">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               
-              {/* Card 1: Main Progress (The Speedometer) */}
+              {/* Card 1: Main Progress */}
               <div className="md:col-span-1 bg-base-100/60 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-sm relative overflow-hidden flex flex-col items-center justify-between min-h-[220px]">
                  <div className="w-full flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-base-content/80 flex items-center gap-2">
@@ -175,7 +172,7 @@ const Dashboard = () => {
               {/* Middle Column */}
               <div className="md:col-span-1 flex flex-col gap-4">
                  
-                 {/* Card 2: Streak (Fire) */}
+                 {/* Card 2: Streak */}
                  <div className="flex-1 bg-gradient-to-br from-orange-500/10 to-red-500/5 border border-orange-500/20 p-5 rounded-3xl flex items-center justify-between relative overflow-hidden group">
                     <div className="absolute -right-6 -bottom-6 text-orange-500/10 group-hover:text-orange-500/20 transition-all duration-500">
                        <Flame size={120} />
@@ -275,7 +272,7 @@ const Dashboard = () => {
               </button>
             </form>
             
-            {/* Optional Description Field */}
+            {/* Description Field */}
             <div className="mt-4">
                <input
                   type="text"
@@ -320,13 +317,13 @@ const Dashboard = () => {
                       : "border-base-200 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/10"
                     }`}
                   >
-                    {/* Action Menu - Positioned relatively to be clickable without triggering Link */}
+
                     <div className="absolute top-4 right-4 z-20">
                       <div className="dropdown dropdown-end dropdown-bottom dropdown-hover">
                         <div 
                           tabIndex={0} 
                           role="button" 
-                          onClick={(e) => e.preventDefault()} // Prevent navigation when clicking menu
+                          onClick={(e) => e.preventDefault()} 
                           className="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content hover:bg-base-200"
                         >
                           <MoreVertical size={16} />
@@ -335,7 +332,7 @@ const Dashboard = () => {
                           <li>
                             <button
                               onClick={(e) => {
-                                e.preventDefault(); // Stop Link propagation
+                                e.preventDefault(); 
                                 handleDeleteHabit(habit._id);
                               }}
                               className="text-error hover:bg-error/10 flex items-center gap-2"

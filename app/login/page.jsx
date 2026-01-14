@@ -85,7 +85,7 @@ export default function Login() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6"> {/* Increased spacing slightly */}
+        <form onSubmit={handleSubmit} className="space-y-6"> 
 
           {/* Email Input */}
           <div>

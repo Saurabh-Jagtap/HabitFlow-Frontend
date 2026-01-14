@@ -3,7 +3,6 @@ import { useState } from "react"
 import api from "../utils/axios.utils.js";
 import { useAuth } from "./AuthProvider"
 import toast from "react-hot-toast";
-import LoadingSpinner from "./LoadingSpinner.jsx";
 
 export default function AvatarSection() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;

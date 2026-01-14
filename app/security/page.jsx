@@ -12,20 +12,16 @@ export default function Security() {
   const { setUser, loading } = useAuth();
   const router = useRouter();
 
-  // Password states
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  // Eye toggles
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
 
-  // Delete confirmation
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [updatingPass, setUpdatingPass] = useState(false);
 
-  /* Password Update */
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
     if (!currentPassword || !newPassword) {
@@ -51,7 +47,6 @@ export default function Security() {
     }
   };
 
-  /* Delete Account */
   const handleDeleteAccount = async () => {
     if (confirmText !== "DELETE") return;
 
@@ -65,7 +60,7 @@ export default function Security() {
       router.push("/register");
     } catch {
       toast.error("Failed to delete account", { id: toastId });
-      setDeleting(false); // Only reset if failed
+      setDeleting(false); 
     }
   };
 
