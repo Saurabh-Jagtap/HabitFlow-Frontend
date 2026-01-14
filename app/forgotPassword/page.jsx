@@ -80,7 +80,7 @@ const ForgotPassword = () => {
               <span className="font-medium text-base-content">{email}</span>
             </p>
 
-            {/* NEW RESEND SECTION START */}
+            {/* RESEND SECTION START */}
             <div className="mb-8 p-4 bg-base-100/50 rounded-xl border border-white/5 w-full">
               <p className="text-sm text-base-content/60 mb-3">
                 Didn't receive the email?
@@ -93,11 +93,11 @@ const ForgotPassword = () => {
               >
                 {loading ? (
                   <span className="loading loading-spinner loading-xs"></span>
-                ) : timeLeft > 0 ? ( // FIX 2: Change 'timer' to 'timeLeft'
+                ) : timeLeft > 0 ? ( 
                   <>
                     <RefreshCw size={14} className="animate-spin-slow" />
-                    {/* FIX 3: Change 'timer' to 'timeLeft' */}
-                    Resend available in {timeLeft}s
+                    
+                    Resend available in {formatTime(timeLeft)}s
                   </>
                 ) : (
                   <>
@@ -107,7 +107,7 @@ const ForgotPassword = () => {
                 )}
               </button>
             </div>
-            {/* NEW RESEND SECTION END */}
+            {/* RESEND SECTION END */}
 
             <Link
               href="/login"
