@@ -21,6 +21,12 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isValidEmail(email)) {
+    toast.error("Please enter a valid email address.");
+    return;
+  }
+  
     setError("");
     setLoading(true);
 

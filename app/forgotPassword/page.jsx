@@ -4,38 +4,43 @@ import api from "../utils/axios.utils";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { Mail, ArrowLeft, CheckCircle2, Lock, RefreshCw } from "lucide-react";
+import { useCooldown } from "../utils/useCooldown.js";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  
-  // State for Resend Timer
-  const [timer, setTimer] = useState(0);
 
-  // Handle the Countdown
-  useEffect(() => {
-    let interval;
-    if (timer > 0) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timer]);
+  const { timeLeft, startCooldown, formatTime } = useCooldown("forgot_pass_cooldown");
 
   const sendResetLink = async (emailValue) => {
+    // Prevent sending if already waiting
+    if (timeLeft > 0) return;
+
     setLoading(true);
+    const toastId = toast.loading("Sending link...");
+
     try {
       await api.post("/api/v1/user/forgot-password", {
         email: emailValue,
       });
-      // Start 60s cooldown on success
-      setTimer(60); 
+
+      toast.success("Reset link sent!", { id: toastId });
       setSubmitted(true);
-      toast.success("Reset link sent!");
+
+      // Trigger standard 60s UI cooldown
+      startCooldown(60);
+
     } catch (error) {
-       toast.error("Something went wrong. Please try again.");
+      const message = error.response?.data?.message || "Something went wrong";
+
+      // Trigger 1 Hour (3600s) cooldown if Rate Limited
+      if (error.response?.status === 429) {
+        toast.error("Limit reached. Please wait an hour.", { id: toastId, icon: "🛑" });
+        startCooldown(3600);
+      } else {
+        toast.error(message, { id: toastId });
+      }
     } finally {
       setLoading(false);
     }
@@ -47,18 +52,18 @@ const ForgotPassword = () => {
   };
 
   const handleResend = () => {
-    if (timer === 0 && !loading) {
+    if (timeLeft === 0 && !loading) {
       sendResetLink(email.trim());
     }
   };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      
+
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
       <div className="w-full max-w-md bg-base-200/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-        
+
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50" />
 
         {submitted ? (
@@ -67,42 +72,44 @@ const ForgotPassword = () => {
             <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-6 text-green-500">
               <CheckCircle2 size={32} />
             </div>
-            
+
             <h2 className="text-2xl font-bold mb-2">Check your email</h2>
-            
+
             <p className="text-base-content/60 mb-8 leading-relaxed">
-              We've sent a password reset link to <br/>
+              We've sent a password reset link to <br />
               <span className="font-medium text-base-content">{email}</span>
             </p>
 
             {/* NEW RESEND SECTION START */}
             <div className="mb-8 p-4 bg-base-100/50 rounded-xl border border-white/5 w-full">
-                <p className="text-sm text-base-content/60 mb-3">
-                    Didn't receive the email?
-                </p>
-                
-                <button 
-                    onClick={handleResend}
-                    disabled={timer > 0 || loading}
-                    className="flex items-center justify-center gap-2 w-full text-sm font-medium text-indigo-400 hover:text-indigo-300 disabled:text-base-content/30 disabled:cursor-not-allowed transition-colors"
-                >
-                    {loading ? (
-                        <span className="loading loading-spinner loading-xs"></span>
-                    ) : timer > 0 ? (
-                        <>
-                           <RefreshCw size={14} className="animate-spin-slow" /> 
-                           Resend available in {timer}s
-                        </>
-                    ) : (
-                        <>
-                            Resend Link
-                        </>
-                    )}
-                </button>
+              <p className="text-sm text-base-content/60 mb-3">
+                Didn't receive the email?
+              </p>
+
+              <button
+                onClick={handleResend}
+                disabled={timeLeft > 0 || loading}
+                className="flex items-center justify-center gap-2 w-full text-sm font-medium text-indigo-400 hover:text-indigo-300 disabled:text-base-content/30 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading ? (
+                  <span className="loading loading-spinner loading-xs"></span>
+                ) : timeLeft > 0 ? ( // FIX 2: Change 'timer' to 'timeLeft'
+                  <>
+                    <RefreshCw size={14} className="animate-spin-slow" />
+                    {/* FIX 3: Change 'timer' to 'timeLeft' */}
+                    Resend available in {timeLeft}s
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw size={14} />
+                    Resend Link
+                  </>
+                )}
+              </button>
             </div>
             {/* NEW RESEND SECTION END */}
 
-            <Link 
+            <Link
               href="/login"
               className="flex items-center gap-2 text-sm font-medium text-base-content/60 hover:text-indigo-400 transition-colors"
             >
@@ -114,13 +121,13 @@ const ForgotPassword = () => {
           // FORM STATE 
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8 text-center sm:text-left">
-                <div className="w-12 h-12 bg-base-300/50 rounded-xl flex items-center justify-center mb-4 mx-auto sm:mx-0 border border-white/5">
-                    <Lock className="w-6 h-6 text-indigo-400" />
-                </div>
-                <h1 className="text-2xl font-bold mb-2">Forgot password?</h1>
-                <p className="text-base-content/60 text-sm">
-                    No worries, we'll send you reset instructions.
-                </p>
+              <div className="w-12 h-12 bg-base-300/50 rounded-xl flex items-center justify-center mb-4 mx-auto sm:mx-0 border border-white/5">
+                <Lock className="w-6 h-6 text-indigo-400" />
+              </div>
+              <h1 className="text-2xl font-bold mb-2">Forgot password?</h1>
+              <p className="text-base-content/60 text-sm">
+                No worries, we'll send you reset instructions.
+              </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -156,10 +163,10 @@ const ForgotPassword = () => {
                            transition-all duration-200"
               >
                 {loading ? (
-                    <div className="flex items-center justify-center gap-2">
-                        <span className="loading loading-spinner loading-sm"></span>
-                        <span>Sending...</span>
-                    </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="loading loading-spinner loading-sm"></span>
+                    <span>Sending...</span>
+                  </div>
                 ) : (
                   "Send Reset Link"
                 )}

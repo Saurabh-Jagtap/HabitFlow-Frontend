@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../components/AuthProvider.jsx";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
+import { useCooldown } from "../utils/useCooldown.js";
 
 export default function Login() {
   const { fetchUser } = useAuth();
@@ -17,9 +18,13 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
+  const { timeLeft, startCooldown, formatTime } = useCooldown("login_cooldown");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (timeLeft > 0) return; 
+
     setError("");
     setLoading(true);
 
@@ -29,7 +34,23 @@ export default function Login() {
       toast.success("Welcome back!");
       router.push("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed");
+      // Check if the error comes from the server response
+      if (err.response) {
+        const status = err.response.status;
+        const message = err.response.data.message;
+
+        // Handle Rate Limit specifically (Status 429)
+        if (status === 429) {
+          startCooldown(15 * 60);
+          toast.error("Security Alert: " + message);
+
+        } else {
+          toast.error(message || "Login failed");
+        }
+      } else {
+        // Network errors 
+        toast.error("Network error. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -135,17 +156,21 @@ export default function Login() {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={loading}
-            className="w-full rounded-xl py-3 font-medium text-white
-               bg-gradient-to-r from-indigo-600 to-purple-600
-               shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40
-               hover:scale-[1.02] active:scale-[0.98]
-               transition-all duration-200"
+            disabled={loading || timeLeft > 0}
+            className={`w-full py-3 rounded-xl font-medium transition-all duration-300
+            ${timeLeft > 0
+                ? "bg-slate-700 text-slate-400 cursor-not-allowed border border-slate-600"
+                : "w-full rounded-xl py-3 font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+              }`}
           >
             {loading ? (
               <span className="loading loading-spinner loading-sm"></span>
+            ) : timeLeft > 0 ? (
+              <span className="flex items-center justify-center gap-2">
+                Try again in {formatTime(timeLeft)}
+              </span>
             ) : (
-              "Log In"
+              "Login"
             )}
           </button>
         </form>
