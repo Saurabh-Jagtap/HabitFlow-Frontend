@@ -50,6 +50,8 @@ The modern, responsive user interface for **HabitFlow**, built to help users bui
     ```bash
     npm run dev
 
+## 📂 Project Structure
+
 ├── app/ │ ├── (auth)/ # Login & Signup Routes │ ├── dashboard/ # Protected Habit Dashboard │ ├── layout.js # Main Root Layout │ └── page.js # Landing Page ├── components/ # Reusable UI Components ├── context/ # AuthProvider & Global State └── utils/ # Axios instance & Helpers
 
 ## 🚀 Deployment
