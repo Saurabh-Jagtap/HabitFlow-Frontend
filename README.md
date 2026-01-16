@@ -1,14 +1,9 @@
----
-
-### Frontend README (`HabitFlow-Frontend`)
-
-```
 # HabitFlow - Frontend 🎨
 
 The modern, responsive user interface for **HabitFlow**, built to help users build and track good habits efficiently.
 
-![App Screenshot](https://via.placeholder.com/800x400?text=Upload+Your+App+Screenshot+Here)
-*(Tip: Replace this link with a screenshot of your actual Dashboard!)*
+![App Screenshot](https://github.com/user-attachments/assets/4abd5e5e-c246-40eb-8977-ec039177eefe)
+![Dashboard Screenshot](https://github.com/user-attachments/assets/086fc5f5-6055-406d-97f2-6bec80e96c04)
 
 ## 🌟 Key Features
 
@@ -25,13 +20,12 @@ The modern, responsive user interface for **HabitFlow**, built to help users bui
 * **State Management:** React Context API
 * **HTTP Client:** Axios (with Interceptors)
 * **Deployment:** Vercel
-```
 
 ## ⚙️ Setup & Installation
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/your-username/HabitFlow-Frontend.git](https://github.com/your-username/HabitFlow-Frontend.git)
+    git clone [https://github.com/Saurabh-Jagtap/HabitFlow-Frontend.git](https://github.com/Saurabh-Jagtap/HabitFlow-Frontend.git)
     cd HabitFlow-Frontend
     ```
 
@@ -41,21 +35,29 @@ The modern, responsive user interface for **HabitFlow**, built to help users bui
     ```
 
 3.  **Set up Environment Variables:**
-    Create a `.env.local` file:
+    Create a `.env.local` file in the root directory:
     ```env
-    NEXT_PUBLIC_BACKEND_URL=[https://your-backend-url.onrender.com](https://your-backend-url.onrender.com)
+    # Replace this with your actual deployed Backend URL
+    NEXT_PUBLIC_BACKEND_URL=https://habitflow-backend-gf9f.onrender.com
     ```
 
 4.  **Run the development server:**
     ```bash
     npm run dev
+    ```
 
 ## 📂 Project Structure
 
-├── app/ │ ├── (auth)/ # Login & Signup Routes │ ├── dashboard/ # Protected Habit Dashboard │ ├── layout.js # Main Root Layout │ └── page.js # Landing Page ├── components/ # Reusable UI Components ├── context/ # AuthProvider & Global State └── utils/ # Axios instance & Helpers
+```bash
+├── app/
+│   ├── (auth)/          # Login & Signup Routes
+│   ├── dashboard/       # Protected Habit Dashboard
+│   ├── layout.js        # Main Root Layout
+│   └── page.js          # Landing Page
+├── components/          # Reusable UI Components
+├── context/             # AuthProvider & Global State
+└── utils/               # Axios instance & Helpers
+```
 
 ## 🚀 Deployment
-
-Deployed live on **Vercel**: `https://habit-flow-frontend-delta.vercel.app`
-
-
+Deployed live on Vercel: https://habit-flow-frontend-delta.vercel.app
