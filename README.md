@@ -1,8 +1,8 @@
 ---
 
-### 2. Frontend README (`HabitFlow-Frontend`)
+### Frontend README (`HabitFlow-Frontend`)
 
-```markdown
+```
 # HabitFlow - Frontend 🎨
 
 The modern, responsive user interface for **HabitFlow**, built to help users build and track good habits efficiently.
@@ -25,6 +25,7 @@ The modern, responsive user interface for **HabitFlow**, built to help users bui
 * **State Management:** React Context API
 * **HTTP Client:** Axios (with Interceptors)
 * **Deployment:** Vercel
+```
 
 ## ⚙️ Setup & Installation
 
