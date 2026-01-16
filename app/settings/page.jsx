@@ -71,12 +71,6 @@ export default function Settings() {
 
   if (loading) return <LoadingSpinner fullScreen={true} />;
 
-  if (!user) return (
-    <div className="min-h-screen flex items-center justify-center text-base-content/60">
-      Please log in to view settings.
-    </div>
-  );
-
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-base-200 relative overflow-hidden">
