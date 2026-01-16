@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+---
 
-## Getting Started
+### 2. Frontend README (`HabitFlow-Frontend`)
 
-First, run the development server:
+```markdown
+# HabitFlow - Frontend 🎨
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The modern, responsive user interface for **HabitFlow**, built to help users build and track good habits efficiently.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+![App Screenshot](https://via.placeholder.com/800x400?text=Upload+Your+App+Screenshot+Here)
+*(Tip: Replace this link with a screenshot of your actual Dashboard!)*
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🌟 Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* **⚡ Next.js App Router:** Utilizing the latest Next.js features for server-side rendering and optimized routing.
+* **🔒 Protected Routes:** Custom High-Order Components (HOC) to secure dashboard and settings pages from unauthorized access.
+* **🎨 Responsive Design:** Mobile-first UI built with **Tailwind CSS** and DaisyUI components.
+* **🚦 Smart Error Handling:** Real-time feedback and toast notifications for user actions (e.g., Rate limit warnings, Success messages).
+* **🔄 Dynamic Dashboard:** Real-time state updates for habit tracking without page reloads.
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+* **Framework:** Next.js 13+
+* **Styling:** Tailwind CSS
+* **State Management:** React Context API
+* **HTTP Client:** Axios (with Interceptors)
+* **Deployment:** Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ Setup & Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/your-username/HabitFlow-Frontend.git](https://github.com/your-username/HabitFlow-Frontend.git)
+    cd HabitFlow-Frontend
+    ```
 
-## Deploy on Vercel
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3.  **Set up Environment Variables:**
+    Create a `.env.local` file:
+    ```env
+    NEXT_PUBLIC_BACKEND_URL=[https://your-backend-url.onrender.com](https://your-backend-url.onrender.com)
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+
+├── app/ │ ├── (auth)/ # Login & Signup Routes │ ├── dashboard/ # Protected Habit Dashboard │ ├── layout.js # Main Root Layout │ └── page.js # Landing Page ├── components/ # Reusable UI Components ├── context/ # AuthProvider & Global State └── utils/ # Axios instance & Helpers
+
+## 🚀 Deployment
+
+Deployed live on **Vercel**: `https://habit-flow-frontend-delta.vercel.app`
+    ```
+
+## 📂 Project Structure
