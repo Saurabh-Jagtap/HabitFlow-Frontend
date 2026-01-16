@@ -55,6 +55,5 @@ The modern, responsive user interface for **HabitFlow**, built to help users bui
 ## 🚀 Deployment
 
 Deployed live on **Vercel**: `https://habit-flow-frontend-delta.vercel.app`
-    ```
 
-## 📂 Project Structure
+
