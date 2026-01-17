@@ -92,6 +92,10 @@ The modern, responsive user interface for **HabitFlow**, built to help users bui
     ├── longestStreak/      # Historical Data Logic
     ├── generateCalendar/   # Date Management
     └── useCooldown/        # Custom Timer Hook
+```
 
 ## 🚀 Deployment
-Deployed live on Vercel: [View Live Demo 🚀](https://habit-flow-frontend-delta.vercel.app)
+
+The application is deployed on Vercel and available for public access.
+
+🔗 **Live Link:** [View Live Demo 🚀](https://habit-flow-frontend-delta.vercel.app)
