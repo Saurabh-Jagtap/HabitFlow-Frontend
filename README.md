@@ -2,7 +2,7 @@
 
 The modern, responsive user interface for **HabitFlow**, built to help users build and track good habits efficiently.
 
-> **Looking for the Backend?** > Check out the [HabitFlow Backend Repository](https://github.com/Saurabh-Jagtap/HabitFlow-Backend.git) to see the API logic.
+> **Looking for the Backend?** > Check out the [HabitFlow Backend Repository](https://github.com/Saurabh-Jagtap/HabitFlow-Backend.git) to see the **API logic and Server architecture**.
 
 ![App Screenshot](https://github.com/user-attachments/assets/4abd5e5e-c246-40eb-8977-ec039177eefe)
 ![Dashboard Screenshot](https://github.com/user-attachments/assets/badedfb4-565a-49d4-8cdc-6e34031829e9)
