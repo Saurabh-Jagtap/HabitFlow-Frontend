@@ -2,14 +2,18 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react"
 import api from "../utils/axios.utils.js";
 import LoadingSpinner from "./LoadingSpinner.jsx";
+import { usePathname } from "next/navigation";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const pathname = usePathname();
+  
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
+  const isPublicRoute = ["/", "/login", "/register", "/forgotPassword"].includes(pathname);
   const fetchUser = useCallback(async () => {
     setLoading(true)
     try {
@@ -26,7 +30,7 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, [fetchUser]);
 
-  if (loading) {
+  if (loading && !isPublicRoute) {
     return <LoadingSpinner fullScreen={true} message="Initializing HabitFlow..." />;
   }
 
