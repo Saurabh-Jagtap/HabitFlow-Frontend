@@ -116,57 +116,103 @@ export default function Security() {
 
                                 <form onSubmit={handlePasswordUpdate} className="space-y-6">
 
-                                    {/* Current Password */}
-                                    <div className="form-control gap-2">
+                                    {/* 1. CURRENT PASSWORD */}
+                                    {/* Logic: Only checks 'required'. We can't validate if it's correct on the client side. */}
+                                    <div className="form-control gap-2 group">
                                         <label className="text-sm font-medium text-base-content/70 ml-1">Current Password</label>
-                                        <div className="relative group">
-                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/40 group-focus-within:text-indigo-500 transition-colors">
+
+                                        <label className={`
+                    flex items-center gap-3 w-full rounded-xl px-4 py-3 bg-base-200/50 border border-base-300 transition
+                    
+                    /* Focus: Indigo */
+                    focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500
+                    
+                    /* Valid (Typed something): Green */
+                    has-[:valid]:border-success has-[:valid]:text-success has-[:valid]:focus-within:ring-success/40
+                    
+                    /* Invalid (Empty & touched): Red */
+                    has-[:invalid:not(:placeholder-shown)]:border-error 
+                    has-[:invalid:not(:placeholder-shown)]:text-error
+                    has-[:invalid:not(:placeholder-shown)]:focus-within:ring-error/40
+                `}>
+                                            <div className="text-base-content/40 group-focus-within:text-indigo-500 transition-colors">
                                                 <Lock size={18} />
                                             </div>
+
                                             <input
                                                 type={showCurrent ? "text" : "password"}
                                                 value={currentPassword}
                                                 onChange={(e) => setCurrentPassword(e.target.value)}
-                                                className="w-full pl-10 pr-12 py-3 rounded-xl bg-base-200/50 border border-base-300 
-                                           focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 
-                                           transition-all placeholder:text-base-content/30"
+                                                className="grow bg-transparent border-none focus:outline-none placeholder:opacity-50 placeholder:text-base-content/50"
                                                 placeholder="••••••••"
+                                                required
                                             />
+
                                             <button
                                                 type="button"
                                                 onClick={() => setShowCurrent(!showCurrent)}
-                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-base-content/40 hover:text-indigo-500 transition cursor-pointer"
+                                                className="opacity-60 hover:opacity-100 transition cursor-pointer p-1"
                                             >
                                                 {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
                                             </button>
-                                        </div>
+                                        </label>
                                     </div>
 
-                                    {/* New Password */}
-                                    <div className="form-control gap-2">
+                                    {/* 2. NEW PASSWORD */}
+                                    {/* Logic: STRICT validation matching Login Page (Regex + 8 chars) */}
+                                    <div className="form-control gap-2 group">
                                         <label className="text-sm font-medium text-base-content/70 ml-1">New Password</label>
-                                        <div className="relative group">
-                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/40 group-focus-within:text-indigo-500 transition-colors">
+
+                                        <label className={`
+                    flex items-center gap-3 w-full rounded-xl px-4 py-3 bg-base-200/50 border border-base-300 transition
+                    
+                    /* Focus */
+                    focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500
+                    
+                    /* Valid (Matches Regex): Green */
+                    has-[:valid]:border-success has-[:valid]:text-success has-[:valid]:focus-within:ring-success/40
+                    
+                    /* Invalid (Doesn't match): Red */
+                    has-[:invalid:not(:placeholder-shown)]:border-error 
+                    has-[:invalid:not(:placeholder-shown)]:text-error
+                    has-[:invalid:not(:placeholder-shown)]:focus-within:ring-error/40
+                `}>
+                                            <div className="text-base-content/40 group-focus-within:text-indigo-500 transition-colors">
                                                 <KeyRound size={18} />
                                             </div>
+
                                             <input
                                                 type={showNew ? "text" : "password"}
                                                 value={newPassword}
                                                 onChange={(e) => setNewPassword(e.target.value)}
-                                                className="w-full pl-10 pr-12 py-3 rounded-xl bg-base-200/50 border border-base-300 
-                                           focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 
-                                           transition-all placeholder:text-base-content/30"
+                                                className="grow bg-transparent border-none focus:outline-none placeholder:opacity-50 placeholder:text-base-content/50"
                                                 placeholder="••••••••"
+                                                required
+                                                minLength="8"
+                                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                                             />
+
                                             <button
                                                 type="button"
                                                 onClick={() => setShowNew(!showNew)}
-                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-base-content/40 hover:text-indigo-500 transition cursor-pointer"
+                                                className="opacity-60 hover:opacity-100 transition cursor-pointer p-1"
                                             >
                                                 {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
                                             </button>
-                                        </div>
-                                        <p className="text-xs text-base-content/50 ml-1 mt-1">Must be at least 6 characters long.</p>
+                                        </label>
+
+                                        {/* Validation Hint (Changes color based on state) */}
+                                        <p className={`
+                    text-xs ml-1 mt-1 transition-colors
+                    /* Default: Gray */
+                    text-base-content/50
+                    /* Invalid: Red */
+                    group-has-[:invalid:not(:placeholder-shown)]:text-error
+                    /* Valid: Green */
+                    group-has-[:valid]:text-success
+                `}>
+                                            Must contain 8+ chars, 1 uppercase, 1 lowercase, 1 number
+                                        </p>
                                     </div>
 
                                     <div className="pt-2 flex justify-end">

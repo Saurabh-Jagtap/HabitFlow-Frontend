@@ -13,7 +13,15 @@ const Navbar = () => {
 
   const avatarUrl = user?.avatar && user.avatar.trim() !== "" ? user.avatar : "/Profile_avatar_placeholder.png";
 
+  const closeDropdown = () => {
+    const elem = document.activeElement;
+    if (elem) {
+      elem.blur();
+    }
+  };
+
   const handleLogout = async () => {
+    closeDropdown()
     const toastId = toast.loading("loading...")
     try {
       await api.post(
@@ -74,21 +82,30 @@ const Navbar = () => {
               <div className="my-1 h-px bg-slate-800" />
 
               <li>
-                <Link href="/" className="flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg hover:bg-slate-800 transition">
+                <Link 
+                href="/" 
+                onClick={closeDropdown}
+                className="flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg hover:bg-slate-800 transition">
                   <House size={18} className="text-indigo-400" />
                   <span className="text-sm">Home</span>
                 </Link>
               </li>
 
               <li>
-                <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg hover:bg-slate-800 transition">
+                <Link 
+                href="/dashboard" 
+                onClick={closeDropdown}
+                className="flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg hover:bg-slate-800 transition">
                   <LayoutDashboard size={18} className="text-indigo-400" />
                   <span className="text-sm">Dashboard</span>
                 </Link>
               </li>
 
               <li>
-                <Link href="/settings" className="flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg hover:bg-slate-800 transition">
+                <Link 
+                href="/settings" 
+                onClick={closeDropdown}
+                className="flex items-center gap-3 px-4 py-3 sm:py-2 rounded-lg hover:bg-slate-800 transition">
                   <Settings size={18} className="text-indigo-400" />
                   <span className="text-sm">Settings</span>
                 </Link>

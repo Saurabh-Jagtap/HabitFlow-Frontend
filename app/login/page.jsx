@@ -23,7 +23,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (timeLeft > 0) return; 
+    if (timeLeft > 0) return;
 
     setError("");
     setLoading(true);
@@ -85,62 +85,99 @@ export default function Login() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6"> 
+        <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Email Input */}
-          <div>
+          {/* Email Section */}
+          <div className="form-control mb-4 group">
             <label className="label">
-              <span className="label-text mb-1 font-medium">Email</span>
+              <span className="label-text font-medium">Email</span>
             </label>
-            <input
-              type="email"
-              placeholder="Email"
-              className="input input-bordered w-full py-3 rounded-lg px-4
-                 bg-base-300/60
-                 border border-base-300
-                 focus:outline-none
-                 focus:ring-2 focus:ring-indigo-500/40
-                 focus:border-indigo-500/60
-                 transition"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+
+            <label className={`
+    flex items-center gap-3 w-full rounded-lg px-4 bg-base-300/60 border border-base-300 transition
+    
+    /* 1. BRAND FOCUS (Default Focus State) */
+    focus-within:ring-2 focus-within:ring-indigo-500/40 focus-within:border-indigo-500
+
+    /* 2. SUCCESS STATE (Green when valid) */
+    has-[:valid]:border-success has-[:valid]:text-success has-[:valid]:focus-within:ring-success/40
+
+    /* 3. ERROR STATE (Red only if invalid AND user has typed something) */
+    has-[:invalid:not(:placeholder-shown)]:border-error 
+    has-[:invalid:not(:placeholder-shown)]:text-error
+    has-[:invalid:not(:placeholder-shown)]:focus-within:ring-error/40
+  `}>
+
+              {/* Icon */}
+              <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
+                  <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                </g>
+              </svg>
+
+              {/* Input */}
+              <input
+                type="email"
+                placeholder="mail@site.com"
+                className="grow bg-transparent border-none focus:outline-none placeholder:opacity-60 py-2.5"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </label>
+
+           {/* Error Text - Only shows when invalid AND not placeholder shown */}
+            <div className="text-xs text-error mt-1 hidden group-has-[:invalid:not(:placeholder-shown)]:block">
+              Enter a valid email address
+            </div>
           </div>
 
-          {/* Password Input Group */}
-          <div className="form-control">
+
+          {/* Password Section */}
+          <div className="form-control group">
             <label className="label">
-              <span className="label-text mb-1 font-medium">Password</span>
+              <span className="label-text font-medium">Password</span>
             </label>
 
-            <div className="relative">
+            <label className={`
+    flex items-center gap-3 w-full rounded-lg px-4 bg-base-300/60 border border-base-300 transition
+    
+    /* FOCUS - Indigo */
+    focus-within:ring-2 focus-within:ring-indigo-500/40 focus-within:border-indigo-500
+
+    /* VALID - Green */
+    has-[:valid]:border-success has-[:valid]:text-success has-[:valid]:focus-within:ring-success/40
+
+    /* INVALID (Typed) - Red */
+    has-[:invalid:not(:placeholder-shown)]:border-error 
+    has-[:invalid:not(:placeholder-shown)]:text-error
+    has-[:invalid:not(:placeholder-shown)]:focus-within:ring-error/40
+  `}>
+
               <input
                 type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                className="grow bg-transparent border-none focus:outline-none placeholder:opacity-60 py-2.5"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="input input-bordered w-full py-3 pr-12
-                   rounded-lg px-4
-                   bg-base-300/60
-                   border border-base-300
-                   focus:outline-none
-                   focus:ring-2 focus:ring-indigo-500/40
-                   focus:border-indigo-500/60
-                   transition"
+                minLength="8"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                 required
               />
 
-              {/* Eye Icon Toggle */}
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-3 flex items-center
-                   text-base-content/60 hover:text-base-content
-                   transition cursor-pointer"
+                className="opacity-60 hover:opacity-100 transition cursor-pointer p-1"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
+            </label>
+
+            {/* Helper Text */}
+            <div className="text-xs text-error mt-1 hidden group-has-[:invalid:not(:placeholder-shown)]:block">
+              Must contain 8+ chars, 1 uppercase, 1 lowercase, 1 number
             </div>
 
             <div className="flex justify-end mt-2">
