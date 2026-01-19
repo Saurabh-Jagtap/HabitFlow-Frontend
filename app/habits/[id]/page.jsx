@@ -92,6 +92,12 @@ const HabitDetailPage = () => {
         if (id) fetchHabitData();
     }, [id, fetchHabitData]);
 
+    // FORCE SCROLL TO TOP when loading finishes
+    useEffect(() => {
+        if (!loading) {
+            window.scrollTo(0, 0);
+        }
+    }, [loading]);
 
     const handleLog = async () => {
         if (completionLoading || completedToday) return;
