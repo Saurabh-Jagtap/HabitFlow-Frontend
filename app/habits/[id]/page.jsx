@@ -94,21 +94,20 @@ const HabitDetailPage = () => {
 
 
     const handleLog = async () => {
-        if (completionLoading) return;
+        if (completionLoading || completedToday) return;
 
-        const previousState = completedToday;
-        setCompletedToday(!previousState);
+        setCompletedToday(true);
 
         try {
             setCompletionLoading(true);
-            await api.post(`/api/v1/habits/${id}/log`, { completed: !completedToday });
+            await api.post(`/api/v1/habits/${id}/log`, { completed: true });
 
-            toast.success(completedToday ? "Progress undone" : "Great job! Keep it up!");
+            toast.success("Great job! Keep it up!");
 
             await fetchHabitData();
 
         } catch {
-            setCompletedToday(previousState);
+            setCompletedToday(false);
             toast.error("Failed to update habit");
         } finally {
             setCompletionLoading(false);
@@ -180,7 +179,7 @@ const HabitDetailPage = () => {
                                 <div className="flex flex-col items-center md:items-end gap-3 shrink-0">
                                     <button
                                         onClick={handleLog}
-                                        disabled={completionLoading}
+                                        disabled={completionLoading || completedToday}
                                         className={`group relative flex items-center justify-center w-full md:w-auto px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300
                             ${completedToday
                                                 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 cursor-default"

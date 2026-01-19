@@ -100,7 +100,7 @@ const Register = () => {
                 </div>
                 <input
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="Enter your fullname"
                   className="grow bg-transparent border-none min-w-0 focus:outline-none placeholder:opacity-60 text-sm"
                   value={fullname}
                   onChange={(e) => setFullname(e.target.value)}
@@ -120,7 +120,7 @@ const Register = () => {
                 </div>
                 <input
                   type="text"
-                  placeholder="johndoe123"
+                  placeholder="Enter your username"
                   className="grow bg-transparent border-none min-w-0 focus:outline-none placeholder:opacity-60 text-sm"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}

@@ -31,7 +31,7 @@ export default function AvatarSection() {
     try {
       setUploading(true);
       const res = await api.patch(
-        `${apiUrl}/api/v1/user/avatar`,
+        "/api/v1/user/avatar",
         formData
       );
       toast.success("Avatar updated", { id: toastId })
@@ -46,11 +46,11 @@ export default function AvatarSection() {
   };
 
   const handleRemove = async () => {
+    toast.loading("Removing avatar...");
     try {
       setUploading(true);
       const res = await api.delete(
-        `${apiUrl}/api/v1/user/avatar`,
-        { withCredentials: true }
+        "/api/v1/user/avatar"
       );
       setUser(res.data.data);
       setSelectedFile(null);
